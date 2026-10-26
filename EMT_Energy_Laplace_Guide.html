@@ -1,0 +1,823 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Energy &amp; Laplace Guide</title>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']], tags: 'none' },
+  chtml: { scale: 1.02 }
+};
+</script>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+<style>
+:root{
+  --bg:#fbfaf7; --surface:#ffffff; --surface2:#f3f1ec; --text:#1d1d1f; --muted:#5d5d63;
+  --border:#e2dfd8; --accent:#2f5bd3; --accent-soft:#e8eefc; --good:#1f7a4d; --good-soft:#e5f4ec;
+  --warn:#9a5b00; --warn-soft:#fdf1dc; --bad:#b3261e; --bad-soft:#fbe9e7; --key:#6b3fb8; --key-soft:#f0e9fb;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141416; --surface:#1c1c20; --surface2:#24242a; --text:#ececef; --muted:#a2a2ab;
+    --border:#33333b; --accent:#8aa8ff; --accent-soft:#1f2a47; --good:#6fd3a0; --good-soft:#173326;
+    --warn:#f2bb63; --warn-soft:#3a2c14; --bad:#ff8a80; --bad-soft:#3d1c1a; --key:#c4a6ff; --key-soft:#2c2140;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141416; --surface:#1c1c20; --surface2:#24242a; --text:#ececef; --muted:#a2a2ab;
+  --border:#33333b; --accent:#8aa8ff; --accent-soft:#1f2a47; --good:#6fd3a0; --good-soft:#173326;
+  --warn:#f2bb63; --warn-soft:#3a2c14; --bad:#ff8a80; --bad-soft:#3d1c1a; --key:#c4a6ff; --key-soft:#2c2140;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:16.5px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+.wrap{max-width:900px;margin:0 auto;padding:24px 16px 80px}
+header.hero{padding:28px 0 8px}
+header.hero h1{font-size:2rem;line-height:1.2;margin:0 0 8px}
+header.hero p{color:var(--muted);margin:0}
+nav.toc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin:22px 0}
+nav.toc ol{margin:6px 0 0;padding-left:22px}
+nav.toc a{color:var(--accent);text-decoration:none}
+nav.toc a:hover{text-decoration:underline}
+h2{font-size:1.55rem;margin:48px 0 10px;padding-top:12px;border-top:2px solid var(--border)}
+h3{font-size:1.2rem;margin:30px 0 8px}
+h4{font-size:1.02rem;margin:20px 0 6px}
+p,li{overflow-wrap:break-word}
+.box{border-radius:10px;padding:12px 16px;margin:14px 0;border:1px solid var(--border);background:var(--surface)}
+.box > :first-child{margin-top:0}.box > :last-child{margin-bottom:0}
+.key{background:var(--key-soft);border-color:transparent;border-left:4px solid var(--key)}
+.tip{background:var(--good-soft);border-color:transparent;border-left:4px solid var(--good)}
+.warn{background:var(--warn-soft);border-color:transparent;border-left:4px solid var(--warn)}
+.trap{background:var(--bad-soft);border-color:transparent;border-left:4px solid var(--bad)}
+.idea{background:var(--accent-soft);border-color:transparent;border-left:4px solid var(--accent)}
+.label{font-weight:700;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px}
+.key .label{color:var(--key)}.tip .label{color:var(--good)}.warn .label{color:var(--warn)}.trap .label{color:var(--bad)}.idea .label{color:var(--accent)}
+.tablewrap{overflow-x:auto;margin:14px 0}
+table{border-collapse:collapse;width:100%;background:var(--surface);font-size:.95rem}
+th,td{border:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--surface2)}
+mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;max-width:100%;padding:2px 0}
+mjx-container:not([display="true"]){display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle;padding:1px 0}
+details.sol{margin:10px 0 24px;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+details.sol > summary{cursor:pointer;padding:10px 14px;font-weight:600;color:var(--accent);list-style:none}
+details.sol > summary::-webkit-details-marker{display:none}
+details.sol > summary::before{content:"▸ ";}
+details.sol[open] > summary::before{content:"▾ ";}
+details.sol .body{padding:2px 16px 14px;border-top:1px solid var(--border)}
+.q{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin:22px 0 0}
+.q .qh{font-weight:700}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:999px;margin-left:6px;vertical-align:middle;background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
+.step{display:flex;gap:10px;margin:10px 0}
+.step .n{flex:0 0 26px;height:26px;border-radius:50%;background:var(--accent);color:var(--bg);font-weight:700;font-size:.85rem;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.step .c{flex:1;min-width:0}
+.ans{font-weight:700;color:var(--good)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+button{font:inherit;font-size:.9rem;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer}
+button:hover{border-color:var(--accent)}
+.small{font-size:.9rem;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.grid2 > *{min-width:0}
+@media (max-width:640px){.grid2{grid-template-columns:minmax(0,1fr)}header.hero h1{font-size:1.6rem}}
+figure{margin:16px 0;text-align:center}
+figure svg{max-width:100%;height:auto}
+figcaption{font-size:.88rem;color:var(--muted)}
+code{background:var(--surface2);padding:1px 5px;border-radius:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>Electrostatic Energy &amp; Laplace's Equation</h1>
+  <p>A guide that starts from scratch, keeps to the notation of D. K. Cheng, <em>Field and Wave Electromagnetics</em> (§3-11 and Ch. 4), and ends with a formula sheet and fully worked practice questions.</p>
+  <div class="toolbar">
+    <button onclick="toggleAll(true)">Open all solutions</button>
+    <button onclick="toggleAll(false)">Close all solutions</button>
+    <button onclick="toggleTheme()">Light / dark</button>
+  </div>
+</header>
+
+<nav class="toc">
+<strong>Contents</strong>
+<ol>
+  <li><a href="#plan">How to use this guide in the next 4 hours</a></li>
+  <li><a href="#basics">Part 0: The basics you need first</a></li>
+  <li><a href="#energy">Part A: Electrostatic energy and energy density</a></li>
+  <li><a href="#force">Part A2: Electrostatic forces from energy (virtual displacement)</a></li>
+  <li><a href="#laplace">Part B: Poisson's and Laplace's equations</a></li>
+  <li><a href="#unique">Part B2: Uniqueness theorem and properties of solutions</a></li>
+  <li><a href="#solve">Part B3: Solving Laplace's equation (1-D cases in all coordinate systems)</a></li>
+  <li><a href="#sep">Part B4: Separation of variables (2-D / advanced)</a></li>
+  <li><a href="#sheet">Formula sheet (one page)</a></li>
+  <li><a href="#practice">Practice questions with step-by-step solutions (22 questions)</a></li>
+  <li><a href="#quick">Rapid-fire concept checks</a></li>
+</ol>
+</nav>
+
+<!-- ============================================================ -->
+<h2 id="plan">1. How to use this guide in the next 4 hours</h2>
+<div class="tablewrap"><table>
+<tr><th>Time</th><th>What to do</th></tr>
+<tr><td>0:00 – 0:20</td><td>Part 0 (basics). Don't skip it. Everything else uses \(\mathbf E=-\nabla V\), \(\nabla\cdot\mathbf D=\rho\) and \(\rho_s=\epsilon E_n\).</td></tr>
+<tr><td>0:20 – 1:10</td><td>Part A and A2 (energy and forces). Then attempt Q1 to Q10 <em>before</em> opening the solutions.</td></tr>
+<tr><td>1:10 – 2:20</td><td>Part B to B3 (Poisson, Laplace, uniqueness, 1-D solutions). Then attempt Q11 to Q19.</td></tr>
+<tr><td>2:20 – 2:50</td><td>Part B4 (separation of variables) and Q20 to Q22. If you are short on time, read only the method box and the final answers.</td></tr>
+<tr><td>2:50 – 3:30</td><td>Write the <a href="#sheet">formula sheet</a> out by hand from memory twice. Writing it out is what makes it stick.</td></tr>
+<tr><td>3:30 – 4:00</td><td><a href="#quick">Rapid-fire checks</a>, then rest.</td></tr>
+</table></div>
+
+<!-- ============================================================ -->
+<h2 id="basics">2. Part 0: The basics you need first</h2>
+
+<h3>2.1 The cast of characters</h3>
+<div class="tablewrap"><table>
+<tr><th>Symbol</th><th>Name</th><th>Unit</th><th>What it means in plain words</th></tr>
+<tr><td>\(Q,\ q\)</td><td>Charge</td><td>C (coulomb)</td><td>The "source" of everything in electrostatics.</td></tr>
+<tr><td>\(\rho\) (or \(\rho_v\))</td><td>Volume charge density</td><td>C/m³</td><td>Charge per unit volume.</td></tr>
+<tr><td>\(\rho_s\)</td><td>Surface charge density</td><td>C/m²</td><td>Charge per unit area (sits on conductor surfaces).</td></tr>
+<tr><td>\(\rho_\ell\)</td><td>Line charge density</td><td>C/m</td><td>Charge per unit length.</td></tr>
+<tr><td>\(\mathbf E\)</td><td>Electric field intensity</td><td>V/m (= N/C)</td><td>Force per unit positive charge. Points from + to −, i.e. from high V to low V.</td></tr>
+<tr><td>\(V\)</td><td>Electric potential</td><td>V (volt = J/C)</td><td>Work per unit charge to bring a test charge from infinity (zero reference) to the point.</td></tr>
+<tr><td>\(\mathbf D\)</td><td>Electric flux density (displacement)</td><td>C/m²</td><td>\(\mathbf D=\epsilon\mathbf E\). Depends only on free charges.</td></tr>
+<tr><td>\(\epsilon=\epsilon_0\epsilon_r\)</td><td>Permittivity</td><td>F/m</td><td>How a material responds to E. \(\epsilon_0=8.854\times10^{-12}\approx\frac{10^{-9}}{36\pi}\) F/m.</td></tr>
+<tr><td>\(C\)</td><td>Capacitance</td><td>F (farad)</td><td>\(C=Q/V\): charge stored per volt.</td></tr>
+<tr><td>\(W_e\)</td><td>Electrostatic energy</td><td>J</td><td>Work done to assemble the charges = energy stored.</td></tr>
+<tr><td>\(w_e\)</td><td>Energy density</td><td>J/m³</td><td>Energy per unit volume of the field.</td></tr>
+</table></div>
+<p class="small">Useful constant: \(\dfrac{1}{4\pi\epsilon_0}=8.988\times10^{9}\approx 9\times10^{9}\ \text{m/F}\).</p>
+
+<h3>2.2 The four relations you'll use constantly</h3>
+<div class="box key"><span class="label">Memorise</span>
+\[
+\textbf{(1)}\ \mathbf E=-\nabla V \qquad
+\textbf{(2)}\ \nabla\cdot\mathbf D=\rho \qquad
+\textbf{(3)}\ \mathbf D=\epsilon\mathbf E \qquad
+\textbf{(4)}\ \rho_s=\mathbf a_n\cdot\mathbf D=\epsilon E_n \ \text{(on a conductor surface)}
+\]
+<ul>
+<li>(1) says the field points "downhill" in potential. The minus sign matters.</li>
+<li>(2) is Gauss's law in point form: charge is where D "spreads out".</li>
+<li>(4) To find the charge sitting on a conductor, take the normal component of D pointing <em>out of the conductor into the field region</em>.</li>
+</ul>
+</div>
+
+<h3>2.3 Gradient (for \(\mathbf E=-\nabla V\)) in the three coordinate systems</h3>
+\[
+\text{Cartesian: }\nabla V=\mathbf a_x\frac{\partial V}{\partial x}+\mathbf a_y\frac{\partial V}{\partial y}+\mathbf a_z\frac{\partial V}{\partial z}
+\]
+\[
+\text{Cylindrical } (r,\phi,z):\ \nabla V=\mathbf a_r\frac{\partial V}{\partial r}+\mathbf a_\phi\frac{1}{r}\frac{\partial V}{\partial \phi}+\mathbf a_z\frac{\partial V}{\partial z}
+\]
+\[
+\text{Spherical } (R,\theta,\phi):\ \nabla V=\mathbf a_R\frac{\partial V}{\partial R}+\mathbf a_\theta\frac{1}{R}\frac{\partial V}{\partial \theta}+\mathbf a_\phi\frac{1}{R\sin\theta}\frac{\partial V}{\partial \phi}
+\]
+<div class="box trap"><span class="label">Trap</span>The \(\frac1r\), \(\frac1R\) and \(\frac{1}{R\sin\theta}\) factors on the angular terms are the most common lost marks. An angle has no units, so dividing by a length is what turns "volts per radian" into V/m.</div>
+
+<h3>2.4 Standard capacitances (they appear in both topics)</h3>
+<div class="tablewrap"><table>
+<tr><th>Geometry</th><th>Capacitance</th></tr>
+<tr><td>Parallel plate, area \(S\), gap \(d\)</td><td>\(C=\dfrac{\epsilon S}{d}\)</td></tr>
+<tr><td>Coaxial (cylindrical), radii \(a&lt;b\), length \(L\)</td><td>\(C=\dfrac{2\pi\epsilon L}{\ln(b/a)}\)</td></tr>
+<tr><td>Spherical (concentric), radii \(a&lt;b\)</td><td>\(C=\dfrac{4\pi\epsilon}{\frac1a-\frac1b}=\dfrac{4\pi\epsilon ab}{b-a}\)</td></tr>
+<tr><td>Isolated sphere of radius \(a\) (let \(b\to\infty\))</td><td>\(C=4\pi\epsilon a\)</td></tr>
+</table></div>
+
+<!-- ============================================================ -->
+<h2 id="energy">3. Part A: Electrostatic energy and energy density</h2>
+
+<h3>3.1 The core idea: energy = work done to assemble the charges</h3>
+<p>Charges push or pull each other, so bringing charges together takes work. Electrostatic fields are <strong>conservative</strong>: the work done doesn't depend on the path, and it isn't lost. It is <strong>stored as potential energy</strong> in the arrangement. That stored energy is \(W_e\) (the subscript e stands for "electric").</p>
+<p>The bookkeeping uses the definition of potential: <em>V at a point = work per unit charge to bring a charge from infinity to that point</em>. So bringing charge \(Q\) to a place where the potential is \(V\) costs work \(QV\).</p>
+
+<h3>3.2 Building it up one charge at a time</h3>
+<div class="step"><div class="n">1</div><div class="c"><strong>First charge \(Q_1\).</strong> Space is empty, so there is no field to fight. Work = 0.</div></div>
+<div class="step"><div class="n">2</div><div class="c"><strong>Second charge \(Q_2\)</strong>, brought to distance \(R_{12}\) from \(Q_1\). It moves against the field of \(Q_1\):
+\[W_2=Q_2V_2=Q_2\frac{Q_1}{4\pi\epsilon_0R_{12}}\qquad\text{(Cheng 3-159)}\]
+The expression is symmetric, so it is also \(Q_1V_1\). Averaging the two gives \(W_2=\tfrac12(Q_1V_1+Q_2V_2)\).</div></div>
+<div class="step"><div class="n">3</div><div class="c"><strong>Third charge \(Q_3\)</strong> must fight both:
+\[\Delta W=Q_3\left(\frac{Q_1}{4\pi\epsilon_0R_{13}}+\frac{Q_2}{4\pi\epsilon_0R_{23}}\right)\]
+\[W_3=\frac{1}{4\pi\epsilon_0}\left(\frac{Q_1Q_2}{R_{12}}+\frac{Q_1Q_3}{R_{13}}+\frac{Q_2Q_3}{R_{23}}\right)=\tfrac12(Q_1V_1+Q_2V_2+Q_3V_3)\]</div></div>
+
+<div class="box key"><span class="label">Formula: N discrete point charges (Cheng 3-165)</span>
+\[
+W_e=\frac12\sum_{k=1}^{N}Q_kV_k \quad\text{(J)},\qquad V_k=\frac{1}{4\pi\epsilon_0}\sum_{j\ne k}\frac{Q_j}{R_{jk}}
+\]
+Equivalent "sum over pairs" form (easier for numbers; every pair counted <strong>once</strong>):
+\[
+W_e=\frac{1}{4\pi\epsilon_0}\sum_{\text{all pairs } i<j}\frac{Q_iQ_j}{R_{ij}}
+\]
+</div>
+
+<div class="box idea"><span class="label">Interpretation: why the ½?</span>In \(\sum Q_kV_k\) every pair is counted twice: once as "\(Q_1\) sitting in \(Q_2\)'s potential" and once as "\(Q_2\) sitting in \(Q_1\)'s potential". The ½ removes the double counting.</div>
+
+<div class="box warn"><span class="label">Two remarks from the textbook (often asked as theory)</span>
+<ol>
+<li><strong>\(W_e\) can be negative.</strong> With opposite charges the field does the work: the charges attract and you hold them back as they come in. A negative total energy means a bound system.</li>
+<li><strong>The discrete formula gives only the interaction (mutual) energy.</strong> It leaves out the <em>self-energy</em>, the work needed to build each point charge itself. For a true point charge the self-energy is infinite, since it behaves like \(Q^2/(8\pi\epsilon_0 a)\) with \(a\to0\).</li>
+</ol>
+</div>
+
+<p><strong>Electron-volt:</strong> \(1\ \text{eV}=1.60\times10^{-19}\ \text{J}\). It is the energy gained by an electron moving through a potential difference of 1 V. To convert J to eV, divide by \(1.6\times10^{-19}\).</p>
+
+<h3>3.3 Continuous charge distributions</h3>
+<p>Replace \(Q_k\to\rho\,dv\) and the sum by an integral:</p>
+<div class="box key"><span class="label">Formula (Cheng 3-170)</span>
+\[W_e=\frac12\int_{V'}\rho V\,dv\quad\text{(J)}\]
+Here \(V\) is the potential at the location of \(\rho\,dv\). <strong>This version includes self-energy</strong>, because every infinitesimal piece interacts with every other piece. Analogous forms: \(\tfrac12\oint\rho_sV\,ds\) for surface charge and \(\tfrac12\int\rho_\ell V\,d\ell\) for line charge.
+</div>
+<p><strong>Special case: a charged conductor.</strong> The whole conductor is at one potential \(V\), so \(W_e=\tfrac12 V\oint\rho_s\,ds=\tfrac12QV\).</p>
+
+<h3>3.4 Energy in terms of the FIELD (the most important form)</h3>
+<p>Often we know \(\mathbf E\) but not \(\rho\). Derivation (worth knowing, as it is sometimes asked):</p>
+<div class="step"><div class="n">1</div><div class="c">Put \(\rho=\nabla\cdot\mathbf D\) into \(W_e=\tfrac12\int\rho V\,dv\): \(\;W_e=\tfrac12\int(\nabla\cdot\mathbf D)V\,dv\).</div></div>
+<div class="step"><div class="n">2</div><div class="c">Vector identity: \(\nabla\cdot(V\mathbf D)=V\nabla\cdot\mathbf D+\mathbf D\cdot\nabla V\), so \((\nabla\cdot\mathbf D)V=\nabla\cdot(V\mathbf D)-\mathbf D\cdot\nabla V\).</div></div>
+<div class="step"><div class="n">3</div><div class="c">Divergence theorem on the first term: \(W_e=\tfrac12\oint_{S'}V\mathbf D\cdot\mathbf a_n\,ds+\tfrac12\int\mathbf D\cdot\mathbf E\,dv\) (using \(-\nabla V=\mathbf E\)).</div></div>
+<div class="step"><div class="n">4</div><div class="c">Let the surface be a huge sphere of radius \(R\to\infty\). Then \(V\sim1/R\), \(D\sim1/R^2\) and area \(\sim R^2\), so the surface term \(\sim 1/R\to0\). What remains is:</div></div>
+
+<div class="box key"><span class="label">Formula (Cheng 3-176 a, b, c)</span>
+\[
+W_e=\frac12\int_{V'}\mathbf D\cdot\mathbf E\,dv=\frac12\int_{V'}\epsilon E^2\,dv=\frac12\int_{V'}\frac{D^2}{\epsilon}\,dv\qquad\text{(J)}
+\]
+</div>
+
+<h3>3.5 Energy density \(w_e\)</h3>
+<p>Define \(w_e\) so that \(W_e=\int_{V'}w_e\,dv\). From the above:</p>
+<div class="box key"><span class="label">Formula: energy density (Cheng 3-178 a, b, c)</span>
+\[
+\boxed{\,w_e=\tfrac12\mathbf D\cdot\mathbf E=\tfrac12\epsilon E^2=\frac{D^2}{2\epsilon}\quad(\text{J/m}^3)\,}
+\]
+</div>
+<div class="box idea"><span class="label">Interpretations you should be able to write in words</span>
+<ul>
+<li>Energy is pictured as <strong>stored in the field itself</strong>, spread through space, with the most energy where \(E\) is strongest.</li>
+<li>\(w_e\propto E^2\): doubling the field quadruples the energy density.</li>
+<li><strong>For a given E</strong>, a higher \(\epsilon\) stores more energy (\(\tfrac12\epsilon E^2\)). <strong>For a given D</strong>, a higher \(\epsilon\) stores less (\(D^2/2\epsilon\)). Which form to use depends on what is held fixed.</li>
+<li>Cheng's caveat: this definition is a mathematical convenience. No experiment can locate energy at a particular point. Only the total integral \(W_e\) is physically guaranteed.</li>
+<li>Units check: \(\epsilon E^2\) has units (F/m)(V/m)² = F·V²/m³ = J/m³, since F·V² = C·V = J.</li>
+<li>Energy density is also a <strong>pressure</strong>: \(\tfrac12\epsilon E^2\) is the outward force per unit area (N/m²) on a conductor surface. See Part A2.</li>
+</ul>
+</div>
+
+<h3>3.6 Capacitor energy</h3>
+<p>Parallel plates (Cheng Ex. 3-24): \(E=V/d\) is uniform, and the volume is \(Sd\):</p>
+\[
+W_e=\tfrac12\epsilon\left(\frac Vd\right)^2(Sd)=\tfrac12\left(\frac{\epsilon S}{d}\right)V^2
+\]
+<div class="box key"><span class="label">Formula: true for ANY two-conductor capacitor (Cheng 3-180)</span>
+\[
+W_e=\tfrac12CV^2=\tfrac12QV=\frac{Q^2}{2C}\quad\text{(J)}
+\]
+</div>
+<div class="box tip"><span class="label">Exam trick: capacitance from energy (Cheng Ex. 3-25)</span>
+<ol>
+<li>Assume charge \(Q\) and find \(\mathbf E\) by Gauss's law.</li>
+<li>Compute \(W_e=\tfrac12\int\epsilon E^2\,dv\).</li>
+<li>Set it equal to \(Q^2/2C\) and solve: \(\;C=\dfrac{Q^2}{2W_e}\) (or \(C=2W_e/V^2\)).</li>
+</ol>
+For coax this gives \(W_e=\dfrac{Q^2}{4\pi\epsilon L}\ln\dfrac ba\Rightarrow C=\dfrac{2\pi\epsilon L}{\ln(b/a)}\).</div>
+
+<h3>3.7 Classic results to recognise on sight</h3>
+<div class="tablewrap"><table>
+<tr><th>System</th><th>Stored energy</th></tr>
+<tr><td>Uniformly charged sphere, radius \(b\), total charge \(Q\) (self-energy)</td><td>\(W_e=\dfrac{4\pi\rho^2b^5}{15\epsilon_0}=\dfrac{3Q^2}{20\pi\epsilon_0 b}\)</td></tr>
+<tr><td>Conducting sphere (or spherical shell) of radius \(a\), charge \(Q\)</td><td>\(W_e=\dfrac{Q^2}{8\pi\epsilon_0a}\)</td></tr>
+<tr><td>Coaxial capacitor, length \(L\)</td><td>\(W_e=\dfrac{Q^2}{4\pi\epsilon L}\ln\dfrac ba\)</td></tr>
+<tr><td>Spherical capacitor</td><td>\(W_e=\dfrac{Q^2}{8\pi\epsilon}\left(\dfrac1a-\dfrac1b\right)\)</td></tr>
+<tr><td>Parallel plate</td><td>\(W_e=\tfrac12\dfrac{\epsilon S}{d}V^2=\dfrac{Q^2d}{2\epsilon S}\)</td></tr>
+</table></div>
+
+<h3>3.8 Battery connected vs disconnected (a favourite conceptual question)</h3>
+<div class="tablewrap"><table>
+<tr><th>Change</th><th>Battery <u>disconnected</u> (Q constant): use \(W=Q^2/2C\)</th><th>Battery <u>connected</u> (V constant): use \(W=\tfrac12CV^2\)</th></tr>
+<tr><td>Double the gap \(d\) (\(C\to C/2\))</td><td>W <strong>doubles</strong>. E unchanged (\(E=\rho_s/\epsilon\)), V doubles.</td><td>W <strong>halves</strong>. E halves, Q halves.</td></tr>
+<tr><td>Fill with dielectric \(\epsilon_r\) (\(C\to\epsilon_rC\))</td><td>W becomes \(W/\epsilon_r\) (decreases). The dielectric is pulled in.</td><td>W becomes \(\epsilon_rW\) (increases). The battery supplies \(2\times\) that extra energy.</td></tr>
+</table></div>
+
+<!-- ============================================================ -->
+<h2 id="force">4. Part A2: Electrostatic forces from energy (virtual displacement)</h2>
+<p>Finding forces with Coulomb's law is tedious for conductors. Instead: <em>imagine</em> moving a body by a tiny distance \(d\boldsymbol\ell\) (a "virtual displacement") and see how the energy changes.</p>
+
+<h4>Case 1: Fixed charges (isolated system, no battery)</h4>
+<p>The mechanical work done by the field must come out of the stored energy: \(\mathbf F_Q\cdot d\boldsymbol\ell=-dW_e=-(\nabla W_e)\cdot d\boldsymbol\ell\).</p>
+<div class="box key"><span class="label">Formula (Cheng 3-185)</span>\[\mathbf F_Q=-\nabla W_e\quad\text{(N)}\qquad\text{e.g. } (F_Q)_x=-\frac{\partial W_e}{\partial x}\]</div>
+
+<h4>Case 2: Fixed potentials (battery connected)</h4>
+<p>Now the battery supplies energy \(dW_s=\sum V_k\,dQ_k\). Half of it goes into stored energy and half into mechanical work: \(dW_e=\tfrac12dW_s\), and so \(dW=dW_e\).</p>
+<div class="box key"><span class="label">Formula</span>\[\mathbf F_V=+\nabla W_e\quad\text{(N)}\]</div>
+<div class="box idea"><span class="label">Interpretation</span>Both formulas give the <strong>same physical force</strong>. The sign differs only because \(W_e\) is written in terms of different held-constant quantities (\(Q\) in one case, \(V\) in the other). Bodies move so as to <em>decrease</em> \(W_e\) when charge is fixed and to <em>increase</em> \(W_e\) when potential is fixed. Either way, they move so as to <strong>increase capacitance</strong>.</div>
+
+<h4>Force between capacitor plates</h4>
+\[
+|F|=\frac{Q^2}{2\epsilon S}=\frac{\epsilon SV^2}{2d^2}=\tfrac12\epsilon E^2\,S=\frac{\rho_s^2}{2\epsilon}S\qquad(\text{attractive})
+\]
+<div class="box key"><span class="label">Electrostatic pressure on a conductor surface</span>\[p=\frac{F}{S}=\frac{\rho_s^2}{2\epsilon}=\tfrac12\epsilon E^2=w_e\quad(\text{N/m}^2)\]
+The force is always directed <strong>outward from the conductor</strong>, into the field region. For a capacitor that means each plate is pulled toward the other.</div>
+<p>Torque version for rotation: \((T_Q)_z=-\dfrac{\partial W_e}{\partial\phi}\) (fixed charge), \((T_V)_z=+\dfrac{\partial W_e}{\partial\phi}\) (fixed V).</p>
+
+<!-- ============================================================ -->
+<h2 id="laplace">5. Part B: Poisson's and Laplace's equations</h2>
+
+<h3>5.1 Why do we need them?</h3>
+<p>In Chapter 3 you found V and E <em>from a known charge distribution</em>. In real devices (capacitors, cables, electrodes), you usually know the <strong>potentials of the conductors</strong> ("this plate is at 100 V, that one is grounded"), but you don't know how charge distributes itself on them. That's a <strong>boundary-value problem</strong>: solve a differential equation in the region between conductors, subject to the known boundary potentials.</p>
+
+<h3>5.2 Derivation (3 lines; learn it)</h3>
+<div class="step"><div class="n">1</div><div class="c">Gauss: \(\nabla\cdot\mathbf D=\rho\), with \(\mathbf D=\epsilon\mathbf E\), so \(\nabla\cdot(\epsilon\mathbf E)=\rho\).</div></div>
+<div class="step"><div class="n">2</div><div class="c">Irrotational field: \(\nabla\times\mathbf E=0\), so \(\mathbf E=-\nabla V\). Hence \(\nabla\cdot(\epsilon\nabla V)=-\rho\).</div></div>
+<div class="step"><div class="n">3</div><div class="c">Simple medium (linear, isotropic, homogeneous: \(\epsilon\) constant) lets \(\epsilon\) come out:</div></div>
+<div class="box key"><span class="label">Poisson's equation (Cheng 4-6)</span>\[\nabla^2V=-\frac{\rho}{\epsilon}\qquad(\text{V/m}^2)\]</div>
+<div class="box key"><span class="label">Laplace's equation (Cheng 4-10): charge-free region, \(\rho=0\)</span>\[\nabla^2V=0\]</div>
+<p>\(\nabla^2\) ("del squared", the <strong>Laplacian</strong>) means "divergence of the gradient": \(\nabla^2V=\nabla\cdot\nabla V\). It's a second-order PDE.</p>
+
+<div class="box idea"><span class="label">Physical meaning of the Laplacian</span>\(\nabla^2V\) at a point measures how much \(V\) there differs from the <em>average</em> of \(V\) in its immediate neighbourhood. \(\nabla^2V=0\) means "V at each point equals the average of its surroundings": no bumps, no dips. Charge is what creates bumps or dips. Positive \(\rho\) gives \(\nabla^2 V&lt;0\), a local hill in V.</div>
+
+<h3>5.3 The Laplacian in all three coordinate systems</h3>
+<div class="box key"><span class="label">Memorise (Cheng 4-7, 4-8, 4-9)</span>
+\[\text{Cartesian: }\ \nabla^2V=\frac{\partial^2V}{\partial x^2}+\frac{\partial^2V}{\partial y^2}+\frac{\partial^2V}{\partial z^2}\]
+\[\text{Cylindrical: }\ \nabla^2V=\frac1r\frac{\partial}{\partial r}\!\left(r\frac{\partial V}{\partial r}\right)+\frac{1}{r^2}\frac{\partial^2V}{\partial\phi^2}+\frac{\partial^2V}{\partial z^2}\]
+\[\text{Spherical: }\ \nabla^2V=\frac{1}{R^2}\frac{\partial}{\partial R}\!\left(R^2\frac{\partial V}{\partial R}\right)+\frac{1}{R^2\sin\theta}\frac{\partial}{\partial\theta}\!\left(\sin\theta\frac{\partial V}{\partial\theta}\right)+\frac{1}{R^2\sin^2\theta}\frac{\partial^2V}{\partial\phi^2}\]
+</div>
+<div class="box tip"><span class="label">Memory aid</span>Radial parts: cylindrical has \(r\) <em>inside and outside</em> (\(\frac1r\,\partial_r\, r\,\partial_r\)). Spherical has \(R^2\) inside and outside (\(\frac1{R^2}\,\partial_R\, R^2\,\partial_R\)). The \(\theta\) term mirrors that pattern with \(\sin\theta\).</div>
+
+<h3>5.4 Terms and their meanings</h3>
+<div class="tablewrap"><table>
+<tr><th>Term</th><th>Meaning</th></tr>
+<tr><td>Simple medium</td><td>Linear, isotropic and homogeneous, so \(\epsilon\) is a constant scalar. Needed to pull \(\epsilon\) out of the divergence.</td></tr>
+<tr><td>Harmonic function</td><td>Any function satisfying Laplace's equation.</td></tr>
+<tr><td>Boundary-value problem</td><td>Solve a PDE in a region given conditions on its boundary.</td></tr>
+<tr><td>Dirichlet boundary condition</td><td>\(V\) is specified on the boundary (e.g. conductor at \(V_0\)).</td></tr>
+<tr><td>Neumann boundary condition</td><td>\(\partial V/\partial n\) is specified on the boundary, i.e. normal E, i.e. surface charge.</td></tr>
+<tr><td>Mixed boundary condition</td><td>V on part of the boundary, \(\partial V/\partial n\) on the rest.</td></tr>
+<tr><td>Fringing</td><td>Field bending at a capacitor's edges. We usually neglect it, so V depends on one coordinate only.</td></tr>
+<tr><td>Space-charge limited</td><td>Vacuum diode where the field at the cathode is zero (\(dV/dy=0\) at \(y=0\)). Gives Child–Langmuir \(J\propto V_0^{3/2}\).</td></tr>
+</table></div>
+
+<h3>5.5 Laplace vs Poisson: which one?</h3>
+<div class="box tip"><span class="label">Decision rule</span>
+<ul>
+<li>Region between conductors with <strong>no charge</strong> (vacuum or ideal dielectric): <strong>Laplace</strong>.</li>
+<li>Region containing <strong>volume charge</strong> (electron cloud, space charge in a diode, a p-n junction): <strong>Poisson</strong>.</li>
+<li>Surface charges on conductors are <em>not</em> volume charge. They live on the boundary and are handled through boundary conditions. So a capacitor is a Laplace problem even though its plates are charged.</li>
+</ul>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="unique">6. Part B2: Uniqueness theorem and properties of harmonic functions</h2>
+<div class="box key"><span class="label">Uniqueness theorem (Cheng 4-3)</span>
+<em>A solution of Poisson's equation (Laplace's equation is the special case \(\rho=0\)) that satisfies the given boundary conditions is the <strong>only</strong> solution.</em>
+</div>
+<p><strong>Proof idea</strong> (sometimes asked): suppose \(V_1\) and \(V_2\) both work. Let \(V_d=V_1-V_2\). Then \(\nabla^2V_d=0\) inside and \(V_d=0\) on the conductors. Using the identity \(\nabla\cdot(V_d\nabla V_d)=V_d\nabla^2V_d+|\nabla V_d|^2\) and the divergence theorem, \(\oint V_d\nabla V_d\cdot d\mathbf s=\int|\nabla V_d|^2dv\). The left side is zero because \(V_d=0\) on the boundary, and also at infinity. So \(\int|\nabla V_d|^2dv=0\), which forces \(\nabla V_d=0\) everywhere. \(V_d\) is then a constant, and that constant is 0 because \(V_d=0\) on the boundary. So \(V_1=V_2\).</p>
+<div class="box idea"><span class="label">Why it matters (interpretation)</span>
+<ul>
+<li>You may <strong>guess</strong> a solution by any method: inspection, symmetry, images, separation of variables. If it satisfies the equation and the boundary conditions, it is THE answer.</li>
+<li>This is the justification for the <strong>method of images</strong>.</li>
+</ul></div>
+<h4>Properties of solutions of Laplace's equation</h4>
+<ol>
+<li><strong>Mean-value property</strong>: \(V\) at a point = average of \(V\) over any sphere (or circle, in 2-D) centred there that encloses no charge.</li>
+<li><strong>No local maxima or minima</strong> inside a charge-free region. The extremes of V occur on the boundaries (conductors).</li>
+<li>Consequence, <strong>Earnshaw's theorem</strong>: a charge can't be held in stable equilibrium by electrostatic forces alone.</li>
+<li><strong>Superposition</strong>: Laplace's equation is linear, so if \(V_1\) and \(V_2\) are solutions, so is \(aV_1+bV_2\). (This is used in separation of variables.)</li>
+<li>Laplace's equation alone gives nothing until boundary conditions are imposed. The boundary conditions fix the integration constants.</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="solve">7. Part B3: Solving Laplace's equation, the 1-D cases</h2>
+
+<div class="box key"><span class="label">The universal 6-step recipe (use this for every problem)</span>
+<div class="step"><div class="n">1</div><div class="c">Pick the coordinate system that matches the conductor shapes: planes → Cartesian, coaxial cylinders or wedges → cylindrical, concentric spheres or cones → spherical.</div></div>
+<div class="step"><div class="n">2</div><div class="c">Decide which ONE coordinate V depends on, by symmetry and by neglecting fringing. Drop all derivatives with respect to the others.</div></div>
+<div class="step"><div class="n">3</div><div class="c">Write the reduced ODE and integrate twice. This gives two constants \(C_1, C_2\).</div></div>
+<div class="step"><div class="n">4</div><div class="c">Apply the two boundary conditions (the two conductor potentials) to find \(C_1\) and \(C_2\).</div></div>
+<div class="step"><div class="n">5</div><div class="c">\(\mathbf E=-\nabla V\) (mind the scale factors), then \(\mathbf D=\epsilon\mathbf E\).</div></div>
+<div class="step"><div class="n">6</div><div class="c">\(\rho_s=\mathbf a_n\cdot\mathbf D\) on each conductor (\(\mathbf a_n\) points away from the conductor). Then \(Q=\int\rho_s\,ds\), and \(C=Q/V_0\).</div></div>
+</div>
+
+<h3>7.1 The five standard 1-D solutions</h3>
+<div class="tablewrap"><table>
+<tr><th>Geometry</th><th>V depends on</th><th>Reduced equation</th><th>General solution</th></tr>
+<tr><td>Parallel plates</td><td>\(y\) (or \(x\))</td><td>\(\dfrac{d^2V}{dy^2}=0\)</td><td>\(V=C_1y+C_2\)</td></tr>
+<tr><td>Coaxial cylinders</td><td>\(r\)</td><td>\(\dfrac1r\dfrac{d}{dr}\!\left(r\dfrac{dV}{dr}\right)=0\)</td><td>\(V=C_1\ln r+C_2\)</td></tr>
+<tr><td>Wedge: two half-planes meeting at an angle</td><td>\(\phi\)</td><td>\(\dfrac{1}{r^2}\dfrac{d^2V}{d\phi^2}=0\)</td><td>\(V=C_1\phi+C_2\)</td></tr>
+<tr><td>Concentric spheres</td><td>\(R\)</td><td>\(\dfrac{1}{R^2}\dfrac{d}{dR}\!\left(R^2\dfrac{dV}{dR}\right)=0\)</td><td>\(V=-\dfrac{C_1}{R}+C_2\)</td></tr>
+<tr><td>Cone vs plane (coaxial cones)</td><td>\(\theta\)</td><td>\(\dfrac{1}{R^2\sin\theta}\dfrac{d}{d\theta}\!\left(\sin\theta\dfrac{dV}{d\theta}\right)=0\)</td><td>\(V=C_1\ln\!\left(\tan\dfrac\theta2\right)+C_2\)</td></tr>
+</table></div>
+
+<h4>How each is integrated (so you can reproduce it)</h4>
+<ul>
+<li><strong>Cylindrical r:</strong> \(r\,dV/dr=C_1\Rightarrow dV/dr=C_1/r\Rightarrow V=C_1\ln r+C_2\).</li>
+<li><strong>Spherical R:</strong> \(R^2\,dV/dR=C_1\Rightarrow dV/dR=C_1/R^2\Rightarrow V=-C_1/R+C_2\).</li>
+<li><strong>Spherical θ:</strong> \(\sin\theta\,dV/d\theta=C_1\Rightarrow dV/d\theta=C_1/\sin\theta\Rightarrow V=C_1\ln\tan(\theta/2)+C_2\), using \(\int\csc\theta\,d\theta=\ln\tan(\theta/2)\).</li>
+</ul>
+
+<h3>7.2 The fully solved results (from these, every capacitance falls out)</h3>
+<div class="tablewrap"><table>
+<tr><th>Problem</th><th>V</th><th>E</th><th>C</th></tr>
+<tr><td>Plates: \(V=0\) at \(y=0\), \(V_0\) at \(y=d\)</td><td>\(V_0\dfrac yd\)</td><td>\(-\mathbf a_y\dfrac{V_0}{d}\)</td><td>\(\dfrac{\epsilon S}{d}\)</td></tr>
+<tr><td>Coax: \(V_0\) at \(r=a\), 0 at \(r=b\)</td><td>\(V_0\dfrac{\ln(b/r)}{\ln(b/a)}\)</td><td>\(\mathbf a_r\dfrac{V_0}{r\ln(b/a)}\)</td><td>\(\dfrac{2\pi\epsilon L}{\ln(b/a)}\)</td></tr>
+<tr><td>Spheres: \(V_0\) at \(R=a\), 0 at \(R=b\)</td><td>\(V_0\dfrac{\frac1R-\frac1b}{\frac1a-\frac1b}\)</td><td>\(\mathbf a_R\dfrac{V_0}{R^2\left(\frac1a-\frac1b\right)}\)</td><td>\(\dfrac{4\pi\epsilon}{\frac1a-\frac1b}\)</td></tr>
+<tr><td>Wedge: 0 at \(\phi=0\), \(V_0\) at \(\phi=\alpha\)</td><td>\(V_0\dfrac{\phi}{\alpha}\)</td><td>\(-\mathbf a_\phi\dfrac{V_0}{\alpha r}\)</td><td>–</td></tr>
+<tr><td>Cone \(\theta=\alpha\) at \(V_0\), plane \(\theta=\pi/2\) at 0</td><td>\(V_0\dfrac{\ln\tan(\theta/2)}{\ln\tan(\alpha/2)}\)</td><td>\(-\mathbf a_\theta\dfrac{V_0}{R\sin\theta\,\ln\tan(\alpha/2)}\)</td><td>–</td></tr>
+</table></div>
+<div class="box idea"><span class="label">Interpretation</span>Only between parallel plates is V linear and E uniform. In a coax, E ∝ 1/r is strongest at the inner conductor; in spheres, E ∝ 1/R² is also strongest at the inner one. That is where dielectric breakdown begins. Inside a wedge, E ∝ 1/r grows toward the edge (the field concentrates at sharp edges).</div>
+
+<h3>7.3 Poisson examples (when charge is present)</h3>
+<p><strong>(a) Uniform charge \(\rho_0\) between grounded plates at \(y=0\) and \(y=d\):</strong> \(\dfrac{d^2V}{dy^2}=-\dfrac{\rho_0}{\epsilon}\Rightarrow V=-\dfrac{\rho_0}{2\epsilon}y^2+C_1y+C_2\). With \(V(0)=V(d)=0\): \(\;V=\dfrac{\rho_0}{2\epsilon}(yd-y^2)\), a parabola with maximum \(\rho_0d^2/8\epsilon\) at the centre. (Q15 below.)</p>
+<p><strong>(b) Vacuum diode, space-charge limited (Cheng Ex. 4-2):</strong> cathode at \(y=0\) (V=0), anode at \(y=d\) (\(V_0\)), with electrons leaving the cathode at zero speed.</p>
+<div class="box key"><span class="label">Results</span>
+\[V(y)=V_0\left(\frac yd\right)^{4/3},\qquad J=\frac{4\epsilon_0}{9d^2}\sqrt{\frac{2e}{m}}\;V_0^{3/2}\quad\text{(Child–Langmuir law)}\]
+Interpretation: the diode is non-linear (\(J\propto V_0^{3/2}\)), unlike Ohm's law. (Full derivation in Q16.)</div>
+<p><strong>(c) Spherical electron cloud of uniform density \(-\rho_0\), radius b (Cheng Ex. 4-3):</strong> inside, Poisson gives \(\mathbf E=-\mathbf a_R\dfrac{\rho_0R}{3\epsilon_0}\). Outside, Laplace gives \(\mathbf E=-\mathbf a_R\dfrac{\rho_0b^3}{3\epsilon_0R^2}\). The constants come from "E finite at R = 0" and "E continuous at R = b".</p>
+
+<!-- ============================================================ -->
+<h2 id="sep">8. Part B4: Separation of variables (when V depends on two coordinates)</h2>
+<p>When V depends on two coordinates (say x and y), guess \(V(x,y)=X(x)\,Y(y)\). Substituting into \(\nabla^2V=0\) and dividing by \(XY\):</p>
+\[\frac{1}{X}\frac{d^2X}{dx^2}+\frac{1}{Y}\frac{d^2Y}{dy^2}=0\]
+<p>The first term depends only on x and the second only on y, and they sum to zero for <em>all</em> x and y. So each must be a constant: \(\dfrac{X''}{X}=-k^2,\ \dfrac{Y''}{Y}=+k^2\) (or the opposite sign). \(k\) is the <strong>separation constant</strong>.</p>
+
+<div class="tablewrap"><table>
+<tr><th>\(k^2\)</th><th>\(X(x)\)</th><th>Shape and when you need it</th></tr>
+<tr><td>\(X''=0\) (\(k=0\))</td><td>\(A_0x+B_0\)</td><td>Linear</td></tr>
+<tr><td>\(X''=-k^2X\)</td><td>\(A\sin kx+B\cos kx\)</td><td>Oscillating. Use in the direction where <strong>V = 0 on two parallel boundaries</strong> (so you can fit zeros).</td></tr>
+<tr><td>\(X''=+k^2X\)</td><td>\(Ae^{kx}+Be^{-kx}\) or \(A\sinh kx+B\cosh kx\)</td><td>Growing or decaying. Use in the direction going to infinity (\(e^{-kx}\)) or a finite box (\(\sinh\)).</td></tr>
+</table></div>
+<p>Sum of the separation constants: \(k_x^2+k_y^2+k_z^2=0\) (in 3-D), so at least one must be imaginary. In other words, at least one direction oscillates and at least one grows or decays.</p>
+
+<h4>Classic problem: the grounded semi-infinite slot</h4>
+<p>Two grounded half-planes at \(y=0\) and \(y=b\) extend from \(x=0\) to \(x=\infty\). The end at \(x=0\) is an insulated strip held at \(V_0\). Find V in the slot. (Fully worked in Q21.)</p>
+\[V(x,y)=\frac{4V_0}{\pi}\sum_{n=1,3,5,\dots}\frac{1}{n}\,e^{-n\pi x/b}\sin\frac{n\pi y}{b}\]
+
+<h4>Advanced results in cylindrical and spherical coordinates (recognise them)</h4>
+<ul>
+<li>Cylindrical, \(V(r,\phi)\): separated solutions are \(r^{\pm n}(\sin n\phi,\cos n\phi)\). A conducting cylinder of radius a placed in a uniform field \(\mathbf E_0=\mathbf a_xE_0\) gives \(V=-E_0\left(r-\dfrac{a^2}{r}\right)\cos\phi\), with \(\rho_s=2\epsilon_0E_0\cos\phi\).</li>
+<li>Spherical, \(V(R,\theta)\): solutions are \(R^n P_n(\cos\theta)\) and \(R^{-(n+1)}P_n(\cos\theta)\), where \(P_n\) are the Legendre polynomials \(P_0=1,\ P_1=\cos\theta,\ P_2=\tfrac12(3\cos^2\theta-1)\). A conducting sphere of radius b in a uniform field \(\mathbf a_zE_0\) gives \(V=-E_0\left(1-\dfrac{b^3}{R^3}\right)R\cos\theta\), with \(\rho_s=3\epsilon_0E_0\cos\theta\).</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="sheet">9. Formula sheet</h2>
+<div class="grid2">
+<div class="box key"><span class="label">Energy</span>
+\(W_e=\dfrac12\sum Q_kV_k=\dfrac{1}{4\pi\epsilon_0}\sum_{\text{pairs}}\dfrac{Q_iQ_j}{R_{ij}}\)<br><br>
+\(W_e=\dfrac12\int\rho V\,dv\)<br><br>
+\(W_e=\dfrac12\int\mathbf D\cdot\mathbf E\,dv=\dfrac12\int\epsilon E^2dv=\dfrac12\int\dfrac{D^2}{\epsilon}dv\)<br><br>
+\(w_e=\dfrac12\mathbf D\cdot\mathbf E=\dfrac12\epsilon E^2=\dfrac{D^2}{2\epsilon}\) J/m³<br><br>
+\(W_e=\dfrac12CV^2=\dfrac12QV=\dfrac{Q^2}{2C}\)<br><br>
+\(C=\dfrac{2W_e}{V^2}=\dfrac{Q^2}{2W_e}\)<br><br>
+\(1\text{ eV}=1.6\times10^{-19}\text{ J}\)
+</div>
+<div class="box key"><span class="label">Forces</span>
+\(\mathbf F_Q=-\nabla W_e\) (Q constant)<br><br>
+\(\mathbf F_V=+\nabla W_e\) (V constant)<br><br>
+\(T_z=\mp\,\partial W_e/\partial\phi\)<br><br>
+Pressure on a conductor: \(p=\dfrac{\rho_s^2}{2\epsilon}=\dfrac12\epsilon E^2\) N/m²<br><br>
+Plate force: \(F=\dfrac{Q^2}{2\epsilon S}=\dfrac{\epsilon SV^2}{2d^2}\) (attractive)
+</div>
+<div class="box key"><span class="label">Poisson / Laplace</span>
+\(\nabla\cdot(\epsilon\nabla V)=-\rho\)<br><br>
+\(\nabla^2V=-\rho/\epsilon\) (Poisson)<br><br>
+\(\nabla^2V=0\) (Laplace)<br><br>
+\(\mathbf E=-\nabla V,\quad\rho_s=\epsilon E_n\)<br><br>
+Uniqueness: equation + boundary conditions give exactly one solution.
+</div>
+<div class="box key"><span class="label">1-D solutions</span>
+\(V=C_1y+C_2\)<br>
+\(V=C_1\ln r+C_2\)<br>
+\(V=C_1\phi+C_2\)<br>
+\(V=-C_1/R+C_2\)<br>
+\(V=C_1\ln\tan(\theta/2)+C_2\)<br><br>
+Diode: \(V=V_0(y/d)^{4/3}\), \(J=\dfrac{4\epsilon_0}{9d^2}\sqrt{\dfrac{2e}{m}}V_0^{3/2}\)
+</div>
+</div>
+<div class="box key"><span class="label">Laplacians</span>
+\(\nabla^2V=V_{xx}+V_{yy}+V_{zz}\)<br>
+\(\nabla^2V=\frac1r\partial_r(rV_r)+\frac1{r^2}V_{\phi\phi}+V_{zz}\)<br>
+\(\nabla^2V=\frac1{R^2}\partial_R(R^2V_R)+\frac1{R^2\sin\theta}\partial_\theta(\sin\theta V_\theta)+\frac{1}{R^2\sin^2\theta}V_{\phi\phi}\)
+</div>
+
+<!-- ============================================================ -->
+<h2 id="practice">10. Practice questions with step-by-step solutions</h2>
+<p class="small">Try each question on paper first, then open its solution. Unless stated otherwise, \(\epsilon_0=8.854\times10^{-12}\) F/m and \(1/(4\pi\epsilon_0)\approx9\times10^9\).</p>
+
+<h3>Set A: Energy of charge systems</h3>
+
+<div class="q"><span class="qh">Q1.</span> <span class="tag">very likely</span><br>
+Three point charges \(Q_1=1\ \mu\text{C},\ Q_2=2\ \mu\text{C},\ Q_3=-3\ \mu\text{C}\) sit at the corners of an equilateral triangle of side 10 cm in free space. Find the stored electrostatic energy.</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<div class="step"><div class="n">1</div><div class="c"><strong>Choose the formula.</strong> Discrete point charges, so use the pair-sum form: \(W_e=\dfrac{1}{4\pi\epsilon_0}\left(\dfrac{Q_1Q_2}{R_{12}}+\dfrac{Q_1Q_3}{R_{13}}+\dfrac{Q_2Q_3}{R_{23}}\right)\).</div></div>
+<div class="step"><div class="n">2</div><div class="c"><strong>All distances are equal</strong> (\(R=0.1\) m), so factor out: \(W_e=\dfrac{1}{4\pi\epsilon_0R}(Q_1Q_2+Q_1Q_3+Q_2Q_3)\).</div></div>
+<div class="step"><div class="n">3</div><div class="c"><strong>Products, keeping signs</strong> (in μC², with 1 μC² = \(10^{-12}\) C²): \(1\cdot2=2\), \(1\cdot(-3)=-3\), \(2\cdot(-3)=-6\). Sum = \(-7\times10^{-12}\) C².</div></div>
+<div class="step"><div class="n">4</div><div class="c"><strong>Substitute:</strong> \(W_e=\dfrac{9\times10^9\times(-7\times10^{-12})}{0.1}=-0.63\) J.</div></div>
+<p class="ans">Answer: \(W_e=-0.63\) J.</p>
+<p><strong>Interpretation:</strong> the energy is negative because attraction dominates. The field did net work as the charges were brought together, so the system is bound: you would need 0.63 J to pull them apart to infinity.</p>
+</div></details>
+
+<div class="q"><span class="qh">Q2.</span> <span class="tag">very likely</span><br>
+Four equal charges \(Q\) are placed at the corners of a square of side \(a\). Find the energy required to assemble them.</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<div class="step"><div class="n">1</div><div class="c"><strong>Count the pairs.</strong> 4 charges make \(\binom42=6\) pairs: 4 along the sides (distance \(a\)) and 2 along the diagonals (distance \(a\sqrt2\)).</div></div>
+<div class="step"><div class="n">2</div><div class="c">\(W_e=\dfrac{Q^2}{4\pi\epsilon_0}\left(\dfrac4a+\dfrac{2}{a\sqrt2}\right)=\dfrac{Q^2}{4\pi\epsilon_0a}\left(4+\sqrt2\right)\).</div></div>
+<div class="step"><div class="n">3</div><div class="c">Numerically: \(4+\sqrt2=5.414\).</div></div>
+<p class="ans">Answer: \(W_e=\dfrac{5.414\,Q^2}{4\pi\epsilon_0a}\approx\dfrac{0.431\,Q^2}{\epsilon_0a}\).</p>
+<p><strong>Cross-check with \(\tfrac12\sum Q_kV_k\):</strong> each charge sees potential \(V=\dfrac{Q}{4\pi\epsilon_0}\left(\dfrac2a+\dfrac1{a\sqrt2}\right)\). Then \(W=\tfrac12\cdot4\cdot Q\cdot V=\dfrac{Q^2}{4\pi\epsilon_0a}(4+\sqrt2)\). The same, as it should be.</p>
+</div></details>
+
+<div class="q"><span class="qh">Q3.</span> <span class="tag">direct</span><br>
+In a hydrogen atom the electron is \(0.53\) Å (\(0.53\times10^{-10}\) m) from the proton. Find the electrostatic potential energy in joules and in eV.</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<div class="step"><div class="n">1</div><div class="c">Two charges: \(W_e=\dfrac{Q_1Q_2}{4\pi\epsilon_0R}\), with \(Q_1=+e\) and \(Q_2=-e\), \(e=1.6\times10^{-19}\) C.</div></div>
+<div class="step"><div class="n">2</div><div class="c">\(W_e=\dfrac{9\times10^9\times(-(1.6\times10^{-19})^2)}{0.53\times10^{-10}}=\dfrac{-9\times10^9\times2.56\times10^{-38}}{5.3\times10^{-11}}=-4.35\times10^{-18}\) J.</div></div>
+<div class="step"><div class="n">3</div><div class="c">To eV: divide by \(1.6\times10^{-19}\): \(-4.35\times10^{-18}/1.6\times10^{-19}=-27.2\) eV.</div></div>
+<p class="ans">Answer: \(W_e\approx-4.35\times10^{-18}\) J \(=-27.2\) eV.</p>
+</div></details>
+
+<div class="q"><span class="qh">Q4.</span> <span class="tag">very likely</span><br>
+Find the total energy stored in a sphere of radius \(b\) carrying a uniform volume charge density \(\rho\) (total charge \(Q\)), (a) using \(W=\tfrac12\int\rho V\,dv\) and (b) using \(W=\tfrac12\int\epsilon_0E^2dv\). (c) What fraction of the energy is stored inside the sphere?</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<p><strong>First, find E by Gauss's law</strong> (we'll need it):</p>
+<ul>
+<li>Inside (\(R&lt;b\)): enclosed charge \(=\rho\cdot\tfrac43\pi R^3\). Then \(E\cdot4\pi R^2=\dfrac{\rho\frac43\pi R^3}{\epsilon_0}\Rightarrow E_1=\dfrac{\rho R}{3\epsilon_0}\).</li>
+<li>Outside (\(R&gt;b\)): \(E_2=\dfrac{\rho b^3}{3\epsilon_0R^2}=\dfrac{Q}{4\pi\epsilon_0R^2}\).</li>
+</ul>
+<p><strong>(a) Using \(\tfrac12\int\rho V\,dv\).</strong> We need V inside.</p>
+<div class="step"><div class="n">1</div><div class="c">\(V(R)=-\int_\infty^bE_2\,dR-\int_b^RE_1\,dR=\dfrac{\rho b^2}{3\epsilon_0}+\dfrac{\rho}{6\epsilon_0}(b^2-R^2)=\dfrac{\rho}{3\epsilon_0}\left(\dfrac32b^2-\dfrac{R^2}{2}\right)\).</div></div>
+<div class="step"><div class="n">2</div><div class="c">\(W_e=\dfrac{\rho}{2}\int_0^b\dfrac{\rho}{3\epsilon_0}\left(\dfrac32b^2-\dfrac{R^2}2\right)4\pi R^2dR\).</div></div>
+<div class="step"><div class="n">3</div><div class="c">\(\int_0^b\left(\tfrac32b^2R^2-\tfrac12R^4\right)dR=\tfrac12b^5-\tfrac1{10}b^5=\tfrac25b^5\).</div></div>
+<div class="step"><div class="n">4</div><div class="c">\(W_e=\dfrac{\rho^2}{6\epsilon_0}\cdot4\pi\cdot\dfrac25b^5=\dfrac{4\pi\rho^2b^5}{15\epsilon_0}\).</div></div>
+<div class="step"><div class="n">5</div><div class="c">With \(\rho=\dfrac{3Q}{4\pi b^3}\): \(W_e=\dfrac{4\pi b^5}{15\epsilon_0}\cdot\dfrac{9Q^2}{16\pi^2b^6}=\dfrac{3Q^2}{20\pi\epsilon_0b}\).</div></div>
+<p><strong>(b) Using \(\tfrac12\int\epsilon_0E^2dv\)</strong>, split into the two regions:</p>
+<div class="step"><div class="n">1</div><div class="c">Inside: \(W_{in}=\tfrac12\epsilon_0\int_0^b\left(\dfrac{QR}{4\pi\epsilon_0b^3}\right)^24\pi R^2dR=\dfrac{Q^2}{8\pi\epsilon_0b^6}\int_0^bR^4dR=\dfrac{Q^2}{40\pi\epsilon_0b}\).</div></div>
+<div class="step"><div class="n">2</div><div class="c">Outside: \(W_{out}=\tfrac12\epsilon_0\int_b^\infty\left(\dfrac{Q}{4\pi\epsilon_0R^2}\right)^24\pi R^2dR=\dfrac{Q^2}{8\pi\epsilon_0}\int_b^\infty\dfrac{dR}{R^2}=\dfrac{Q^2}{8\pi\epsilon_0b}\).</div></div>
+<div class="step"><div class="n">3</div><div class="c">Total: \(\dfrac{Q^2}{8\pi\epsilon_0b}\left(1+\dfrac15\right)=\dfrac{6Q^2}{40\pi\epsilon_0b}=\dfrac{3Q^2}{20\pi\epsilon_0b}\). This matches (a).</div></div>
+<p><strong>(c)</strong> Fraction inside \(=\dfrac{1/40}{6/40}=\dfrac16\).</p>
+<p class="ans">Answer: \(W_e=\dfrac{3Q^2}{20\pi\epsilon_0b}=\dfrac{4\pi\rho^2b^5}{15\epsilon_0}\). One sixth of it is stored inside the sphere and five sixths outside.</p>
+</div></details>
+
+<div class="q"><span class="qh">Q5.</span> <span class="tag">very likely</span><br>
+A metal sphere of radius \(a=10\) cm in air carries charge \(Q=1\ \mu\)C. Find (a) the energy stored, (b) the energy density at its surface.</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<div class="step"><div class="n">1</div><div class="c">Outside, \(E=\dfrac{Q}{4\pi\epsilon_0R^2}\). Inside a conductor E = 0, so there is no energy inside.</div></div>
+<div class="step"><div class="n">2</div><div class="c">\(W_e=\int_a^\infty\tfrac12\epsilon_0E^2\,4\pi R^2dR=\dfrac{Q^2}{8\pi\epsilon_0a}\). Check: \(C=4\pi\epsilon_0a\) and \(Q^2/2C=Q^2/(8\pi\epsilon_0a)\). It agrees.</div></div>
+<div class="step"><div class="n">3</div><div class="c">Numbers: \(\dfrac{Q^2}{8\pi\epsilon_0a}=\dfrac12\cdot\dfrac{Q^2}{4\pi\epsilon_0a}=\dfrac12\cdot\dfrac{9\times10^9\times10^{-12}}{0.1}=\dfrac12\times0.09=0.045\) J.</div></div>
+<div class="step"><div class="n">4</div><div class="c">At the surface: \(E=\dfrac{9\times10^9\times10^{-6}}{0.01}=9\times10^5\) V/m. Then \(w_e=\tfrac12\epsilon_0E^2=0.5\times8.854\times10^{-12}\times8.1\times10^{11}=3.59\) J/m³.</div></div>
+<p class="ans">Answer: (a) 0.045 J = 45 mJ, (b) 3.59 J/m³.</p>
+</div></details>
+
+<h3>Set B: Energy density and capacitors</h3>
+
+<div class="q"><span class="qh">Q6.</span> <span class="tag">very likely</span><br>
+In free space, \(V=3x^2+2y\) (V). Find the electrostatic energy stored in the cube \(0\le x,y,z\le1\) m.</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<div class="step"><div class="n">1</div><div class="c">\(\mathbf E=-\nabla V=-\left(\mathbf a_x\dfrac{\partial V}{\partial x}+\mathbf a_y\dfrac{\partial V}{\partial y}\right)=-6x\,\mathbf a_x-2\,\mathbf a_y\) V/m.</div></div>
+<div class="step"><div class="n">2</div><div class="c">\(E^2=36x^2+4\). Then \(w_e=\tfrac12\epsilon_0(36x^2+4)\).</div></div>
+<div class="step"><div class="n">3</div><div class="c">\(W_e=\int_0^1\!\int_0^1\!\int_0^1\tfrac12\epsilon_0(36x^2+4)\,dx\,dy\,dz=\tfrac12\epsilon_0\left[12x^3+4x\right]_0^1\cdot1\cdot1=\tfrac12\epsilon_0(16)=8\epsilon_0\).</div></div>
+<div class="step"><div class="n">4</div><div class="c">\(8\times8.854\times10^{-12}=7.08\times10^{-11}\) J.</div></div>
+<p class="ans">Answer: \(W_e=8\epsilon_0\approx70.8\) pJ.</p>
+<p class="small">Side note: \(\nabla^2V=6\neq0\), so this V is <em>not</em> a Laplace solution. The region holds charge \(\rho=-\epsilon_0\nabla^2V=-6\epsilon_0\). The energy formula still works.</p>
+</div></details>
+
+<div class="q"><span class="qh">Q7.</span> <span class="tag">very likely</span><br>
+A parallel-plate capacitor has plate area 100 cm², separation 2 mm, a dielectric with \(\epsilon_r=4\), and 100 V applied. Find C, Q, E, the energy density, and the total energy (compute it two ways).</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<div class="step"><div class="n">1</div><div class="c"><strong>Units first:</strong> \(S=100\ \text{cm}^2=0.01\ \text{m}^2\), \(d=0.002\) m, \(\epsilon=4\epsilon_0=3.5416\times10^{-11}\) F/m.</div></div>
+<div class="step"><div class="n">2</div><div class="c">\(C=\dfrac{\epsilon S}{d}=\dfrac{3.5416\times10^{-11}\times0.01}{0.002}=1.771\times10^{-10}\) F = 177.1 pF.</div></div>
+<div class="step"><div class="n">3</div><div class="c">\(Q=CV=1.771\times10^{-8}\) C = 17.7 nC.</div></div>
+<div class="step"><div class="n">4</div><div class="c">\(E=V/d=100/0.002=5\times10^4\) V/m.</div></div>
+<div class="step"><div class="n">5</div><div class="c">\(w_e=\tfrac12\epsilon E^2=0.5\times3.5416\times10^{-11}\times2.5\times10^9=0.0443\) J/m³.</div></div>
+<div class="step"><div class="n">6</div><div class="c"><strong>Way 1:</strong> \(W=w_e\times\text{volume}=0.0443\times(0.01\times0.002)=8.85\times10^{-7}\) J.<br><strong>Way 2:</strong> \(W=\tfrac12CV^2=0.5\times1.771\times10^{-10}\times10^4=8.85\times10^{-7}\) J. Both agree.</div></div>
+<p class="ans">Answer: C = 177 pF, Q = 17.7 nC, E = 50 kV/m, \(w_e\) = 0.0443 J/m³, W = 0.885 μJ.</p>
+</div></details>
+
+<div class="q"><span class="qh">Q8.</span> <span class="tag">conceptual, very likely</span><br>
+A charged air parallel-plate capacitor has its plate separation doubled. Find the factor by which the stored energy changes if (a) the battery was disconnected first, (b) the battery remains connected. Where does the energy go or come from?</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<div class="step"><div class="n">1</div><div class="c">\(C=\epsilon S/d\), so doubling d gives \(C'=C/2\).</div></div>
+<div class="step"><div class="n">2</div><div class="c"><strong>(a) Disconnected, so Q is fixed.</strong> Use the form that contains Q: \(W=Q^2/2C\). Then \(W'=Q^2/(2\cdot C/2)=2W\). <strong>Energy doubles.</strong> It came from the mechanical work you did pulling the attracting plates apart. (E = σ/ε stays the same, and the volume of field doubles.)</div></div>
+<div class="step"><div class="n">3</div><div class="c"><strong>(b) Connected, so V is fixed.</strong> Use \(W=\tfrac12CV^2\). Then \(W'=\tfrac12(C/2)V^2=W/2\). <strong>Energy halves.</strong> Q drops by \(Q/2\), so charge \(Q/2\) is pushed back into the battery. The battery absorbs \(V\cdot Q/2=W\). That equals the lost field energy (\(W/2\)) plus your mechanical work (\(W/2\)).</div></div>
+<p class="ans">Answer: (a) ×2, (b) ×½.</p>
+<div class="box tip"><span class="label">Rule</span>Always write W using the quantity that is held constant.</div>
+</div></details>
+
+<div class="q"><span class="qh">Q9.</span> <span class="tag">very likely</span><br>
+Using the energy method, find the capacitance per unit length of a coaxial cable with inner radius \(a\), outer radius \(b\), and dielectric \(\epsilon\). Evaluate for \(a=1\) mm, \(b=4\) mm, \(\epsilon_r=2.25\), and find the energy stored per metre at 100 V.</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<div class="step"><div class="n">1</div><div class="c"><strong>Assume charge</strong> \(+Q\) on the inner conductor (length L). Gauss with a cylinder of radius r: \(D\cdot2\pi rL=Q\Rightarrow E=\dfrac{Q}{2\pi\epsilon Lr}\) for \(a&lt;r&lt;b\).</div></div>
+<div class="step"><div class="n">2</div><div class="c"><strong>Energy:</strong> volume element \(dv=2\pi rL\,dr\).<br>\(W_e=\tfrac12\int_a^b\epsilon\left(\dfrac{Q}{2\pi\epsilon Lr}\right)^2 2\pi rL\,dr=\dfrac{Q^2}{4\pi\epsilon L}\int_a^b\dfrac{dr}{r}=\dfrac{Q^2}{4\pi\epsilon L}\ln\dfrac ba\).</div></div>
+<div class="step"><div class="n">3</div><div class="c"><strong>Equate to \(Q^2/2C\):</strong> \(\dfrac{Q^2}{2C}=\dfrac{Q^2}{4\pi\epsilon L}\ln\dfrac ba\Rightarrow C=\dfrac{2\pi\epsilon L}{\ln(b/a)}\).</div></div>
+<div class="step"><div class="n">4</div><div class="c"><strong>Numbers</strong> (L = 1 m): \(2\pi\times2.25\times8.854\times10^{-12}=1.2517\times10^{-10}\); \(\ln4=1.3863\). So \(C=9.03\times10^{-11}\) F/m = 90.3 pF/m.</div></div>
+<div class="step"><div class="n">5</div><div class="c">\(W=\tfrac12CV^2=0.5\times9.03\times10^{-11}\times10^4=4.51\times10^{-7}\) J/m.</div></div>
+<p class="ans">Answer: \(C=2\pi\epsilon/\ln(b/a)\) per metre = 90.3 pF/m, W = 0.451 μJ/m.</p>
+</div></details>
+
+<div class="q"><span class="qh">Q10.</span> <span class="tag">likely</span><br>
+A parallel-plate capacitor (area 0.01 m²) has two dielectric layers in series: layer 1 is 1 mm thick with \(\epsilon_{r1}=2\), and layer 2 is 1 mm thick with \(\epsilon_{r2}=4\). 300 V is applied. Find D, E and \(w_e\) in each layer, and the total energy. Which layer stores more energy?</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<div class="step"><div class="n">1</div><div class="c"><strong>Key physics:</strong> at the interface, the normal D is continuous (no free surface charge). So D is the <em>same</em> in both layers, but \(E_i=D/\epsilon_i\) differs.</div></div>
+<div class="step"><div class="n">2</div><div class="c">Voltage adds: \(V=E_1d_1+E_2d_2=D\left(\dfrac{d_1}{\epsilon_1}+\dfrac{d_2}{\epsilon_2}\right)\).<br>\(\dfrac{d_1}{\epsilon_1}+\dfrac{d_2}{\epsilon_2}=\dfrac{10^{-3}}{\epsilon_0}\left(\dfrac12+\dfrac14\right)=\dfrac{0.75\times10^{-3}}{\epsilon_0}\).<br>\(D=\dfrac{300\,\epsilon_0}{0.75\times10^{-3}}=4\times10^5\epsilon_0=3.54\times10^{-6}\) C/m².</div></div>
+<div class="step"><div class="n">3</div><div class="c">\(E_1=D/(2\epsilon_0)=2\times10^5\) V/m and \(E_2=D/(4\epsilon_0)=1\times10^5\) V/m. Check: \(200+100=300\) V. ✓</div></div>
+<div class="step"><div class="n">4</div><div class="c">\(w_{e1}=\tfrac12\epsilon_1E_1^2=\tfrac12(2\epsilon_0)(4\times10^{10})=4\times10^{10}\epsilon_0=0.354\) J/m³.<br>\(w_{e2}=\tfrac12(4\epsilon_0)(10^{10})=2\times10^{10}\epsilon_0=0.177\) J/m³.</div></div>
+<div class="step"><div class="n">5</div><div class="c">\(W=(0.354+0.177)\times(0.01\times10^{-3})=5.31\times10^{-6}\) J.<br>Check: \(C=\dfrac{S}{d_1/\epsilon_1+d_2/\epsilon_2}=\dfrac{0.01\,\epsilon_0}{0.75\times10^{-3}}=1.18\times10^{-10}\) F, and \(\tfrac12CV^2=5.31\times10^{-6}\) J. ✓</div></div>
+<p class="ans">Answer: the lower-permittivity layer (\(\epsilon_r=2\)) has twice the field and stores twice the energy.</p>
+<p><strong>Interpretation:</strong> with D fixed, \(w_e=D^2/2\epsilon\). A smaller ε means more energy. This is why an air gap in series with insulation is the most stressed part and breaks down first.</p>
+</div></details>
+
+<h3>Set C: Forces from energy</h3>
+
+<div class="q"><span class="qh">Q11.</span> <span class="tag">very likely</span><br>
+Find the force between the plates of a parallel-plate capacitor (area S, separation x, permittivity ε) using the principle of virtual displacement, (a) with constant charge Q and (b) with constant voltage V. Evaluate for the capacitor of Q7.</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<div class="step"><div class="n">1</div><div class="c"><strong>(a) Fixed Q.</strong> Write W in terms of Q and x: \(W_e=\dfrac{Q^2}{2C}=\dfrac{Q^2x}{2\epsilon S}\).</div></div>
+<div class="step"><div class="n">2</div><div class="c">\(F_x=-\dfrac{\partial W_e}{\partial x}=-\dfrac{Q^2}{2\epsilon S}\). The minus sign means the force acts in the direction of decreasing x, so the plates <strong>attract</strong>.</div></div>
+<div class="step"><div class="n">3</div><div class="c"><strong>(b) Fixed V.</strong> \(W_e=\tfrac12CV^2=\dfrac{\epsilon SV^2}{2x}\). Then \(F_x=+\dfrac{\partial W_e}{\partial x}=-\dfrac{\epsilon SV^2}{2x^2}\). Also attractive.</div></div>
+<div class="step"><div class="n">4</div><div class="c"><strong>Same?</strong> Substitute \(Q=\epsilon SV/x\) into (a): \(\dfrac{\epsilon^2S^2V^2/x^2}{2\epsilon S}=\dfrac{\epsilon SV^2}{2x^2}\). ✓ The two cases give the same force.</div></div>
+<div class="step"><div class="n">5</div><div class="c"><strong>Numbers (Q7):</strong> \(|F|=\tfrac12\epsilon E^2S=0.0443\times0.01=4.43\times10^{-4}\) N.</div></div>
+<p class="ans">Answer: \(|F|=\dfrac{Q^2}{2\epsilon S}=\dfrac{\epsilon SV^2}{2x^2}\), attractive; 0.443 mN for Q7.</p>
+<p><strong>Interpretation:</strong> force per area = \(\tfrac12\epsilon E^2\) = energy density. Field lines act like stretched rubber bands pulling the plates together.</p>
+</div></details>
+
+<div class="q"><span class="qh">Q12.</span> <span class="tag">likely</span><br>
+The surface charge density on a conductor in air is \(\rho_s=10\ \mu\)C/m². Find the electrostatic pressure on the surface and its direction.</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<div class="step"><div class="n">1</div><div class="c">At the conductor surface \(E=\rho_s/\epsilon_0\), so \(p=\tfrac12\epsilon_0E^2=\dfrac{\rho_s^2}{2\epsilon_0}\).</div></div>
+<div class="step"><div class="n">2</div><div class="c">\(p=\dfrac{(10^{-5})^2}{2\times8.854\times10^{-12}}=\dfrac{10^{-10}}{1.7708\times10^{-11}}=5.65\) N/m².</div></div>
+<p class="ans">Answer: 5.65 N/m², directed outward (normal to the surface, away from the conductor), regardless of the sign of the charge.</p>
+</div></details>
+
+<h3>Set D: Laplace's equation, checking and solving</h3>
+
+<div class="q"><span class="qh">Q13.</span> <span class="tag">very likely (direct)</span><br>
+Which of the following satisfy Laplace's equation? For any that don't, find the charge density in free space that produces it.<br>
+(i) \(V=x^2-y^2\) (ii) \(V=x^2+y^2\) (iii) \(V=e^{-x}\sin y\) (iv) \(V=\ln r\) (cylindrical) (v) \(V=r\cos\phi\) (vi) \(V=\dfrac{\cos\theta}{R^2}\) (vii) \(V=R^2\) (spherical)</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<p>Method: compute \(\nabla^2V\) in the matching coordinate system. If it equals 0, V is harmonic. Otherwise \(\rho=-\epsilon_0\nabla^2V\).</p>
+<div class="step"><div class="n">i</div><div class="c">\(V_{xx}=2,\ V_{yy}=-2\). Sum = 0. ✓ <strong>Satisfies.</strong></div></div>
+<div class="step"><div class="n">ii</div><div class="c">\(2+2=4\neq0\). ✗ \(\rho=-4\epsilon_0=-3.54\times10^{-11}\) C/m³.</div></div>
+<div class="step"><div class="n">iii</div><div class="c">\(V_{xx}=e^{-x}\sin y,\ V_{yy}=-e^{-x}\sin y\). Sum = 0. ✓</div></div>
+<div class="step"><div class="n">iv</div><div class="c">\(\dfrac1r\dfrac{d}{dr}\left(r\cdot\dfrac1r\right)=\dfrac1r\dfrac{d}{dr}(1)=0\). ✓ (This is the coax solution.)</div></div>
+<div class="step"><div class="n">v</div><div class="c">\(\dfrac1r\partial_r(r\cos\phi)+\dfrac{1}{r^2}(-r\cos\phi)=\dfrac{\cos\phi}{r}-\dfrac{\cos\phi}{r}=0\). ✓ (It's just \(V=x\).)</div></div>
+<div class="step"><div class="n">vi</div><div class="c">R-part: \(\dfrac{1}{R^2}\partial_R\left(R^2\cdot(-2)\dfrac{\cos\theta}{R^3}\right)=\dfrac{1}{R^2}\partial_R\left(-\dfrac{2\cos\theta}{R}\right)=\dfrac{2\cos\theta}{R^4}\).<br>θ-part: \(\dfrac{1}{R^2\sin\theta}\partial_\theta\left(\sin\theta\cdot\dfrac{-\sin\theta}{R^2}\right)=\dfrac{-2\sin\theta\cos\theta}{R^4\sin\theta}=-\dfrac{2\cos\theta}{R^4}\).<br>Sum = 0. ✓ (This is the potential of a dipole.)</div></div>
+<div class="step"><div class="n">vii</div><div class="c">\(\dfrac{1}{R^2}\partial_R(R^2\cdot2R)=\dfrac{6R^2}{R^2}=6\neq0\). ✗ \(\rho=-6\epsilon_0\).</div></div>
+<p class="ans">Answer: (i), (iii), (iv), (v), (vi) are harmonic. For (ii) \(\rho=-4\epsilon_0\) and for (vii) \(\rho=-6\epsilon_0\).</p>
+</div></details>
+
+<div class="q"><span class="qh">Q14.</span> <span class="tag">very likely (Cheng Ex 4-1)</span><br>
+Parallel plates: the lower plate (\(y=0\)) is grounded, the upper plate (\(y=d\)) is at \(V_0\), and fringing is neglected. Find V(y), E, and the surface charge density on each plate. Then take \(d=5\) mm, \(V_0=200\) V, \(\epsilon_r=2.5\).</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<div class="step"><div class="n">1</div><div class="c"><strong>Which equation?</strong> No charge between the plates, so use Laplace. No fringing means V depends only on y: \(\dfrac{d^2V}{dy^2}=0\).</div></div>
+<div class="step"><div class="n">2</div><div class="c"><strong>Integrate twice:</strong> \(\dfrac{dV}{dy}=C_1\Rightarrow V=C_1y+C_2\).</div></div>
+<div class="step"><div class="n">3</div><div class="c"><strong>Boundary conditions:</strong> \(V(0)=0\Rightarrow C_2=0\). \(V(d)=V_0\Rightarrow C_1=V_0/d\). So \(V=\dfrac{V_0}{d}y\).</div></div>
+<div class="step"><div class="n">4</div><div class="c">\(\mathbf E=-\nabla V=-\mathbf a_y\dfrac{V_0}{d}\). It points down, from high V to low V. ✓</div></div>
+<div class="step"><div class="n">5</div><div class="c"><strong>Charges.</strong> \(\mathbf D=-\mathbf a_y\epsilon V_0/d\).<br>Lower plate: normal pointing into the gap is \(+\mathbf a_y\), so \(\rho_{s,\text{lower}}=\mathbf a_y\cdot\mathbf D=-\epsilon V_0/d\).<br>Upper plate: normal into the gap is \(-\mathbf a_y\), so \(\rho_{s,\text{upper}}=+\epsilon V_0/d\).</div></div>
+<div class="step"><div class="n">6</div><div class="c"><strong>Numbers:</strong> \(E=200/0.005=4\times10^4\) V/m. \(\rho_s=\epsilon E=2.5\times8.854\times10^{-12}\times4\times10^4=8.85\times10^{-7}\) C/m².</div></div>
+<p class="ans">Answer: \(V=40{,}000\,y\) V, \(\mathbf E=-4\times10^4\mathbf a_y\) V/m, \(\rho_s=\pm0.885\ \mu\)C/m² (+ on the top plate, − on the bottom).</p>
+</div></details>
+
+<div class="q"><span class="qh">Q15.</span> <span class="tag">likely (Poisson)</span><br>
+The region \(0&lt;y&lt;d\) between two grounded plates holds a uniform charge density \(\rho_0\). Find V(y), E(y), the maximum potential, and its location.</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<div class="step"><div class="n">1</div><div class="c">Charge is present, so use <strong>Poisson</strong>: \(\dfrac{d^2V}{dy^2}=-\dfrac{\rho_0}{\epsilon}\).</div></div>
+<div class="step"><div class="n">2</div><div class="c">Integrate once: \(\dfrac{dV}{dy}=-\dfrac{\rho_0}{\epsilon}y+C_1\). Integrate again: \(V=-\dfrac{\rho_0}{2\epsilon}y^2+C_1y+C_2\).</div></div>
+<div class="step"><div class="n">3</div><div class="c">\(V(0)=0\Rightarrow C_2=0\). \(V(d)=0\Rightarrow-\dfrac{\rho_0d^2}{2\epsilon}+C_1d=0\Rightarrow C_1=\dfrac{\rho_0d}{2\epsilon}\).</div></div>
+<div class="step"><div class="n">4</div><div class="c">\(V(y)=\dfrac{\rho_0}{2\epsilon}(yd-y^2)=\dfrac{\rho_0}{2\epsilon}y(d-y)\).</div></div>
+<div class="step"><div class="n">5</div><div class="c">\(\mathbf E=-\dfrac{dV}{dy}\mathbf a_y=-\dfrac{\rho_0}{2\epsilon}(d-2y)\,\mathbf a_y=\dfrac{\rho_0}{\epsilon}\left(y-\dfrac d2\right)\mathbf a_y\). E is zero at the centre and points outward toward both plates (for \(\rho_0&gt;0\)).</div></div>
+<div class="step"><div class="n">6</div><div class="c">Maximum: \(dV/dy=0\Rightarrow y=d/2\). \(V_{max}=\dfrac{\rho_0}{2\epsilon}\cdot\dfrac d2\cdot\dfrac d2=\dfrac{\rho_0d^2}{8\epsilon}\).</div></div>
+<p class="ans">Answer: \(V=\dfrac{\rho_0}{2\epsilon}y(d-y)\), with \(V_{max}=\dfrac{\rho_0d^2}{8\epsilon}\) at the midplane.</p>
+<p class="small">Note that this V has an interior maximum. That is allowed only because charge is present: with Poisson, unlike Laplace, interior maxima can occur.</p>
+</div></details>
+
+<div class="q"><span class="qh">Q16.</span> <span class="tag">likely (Cheng Ex 4-2)</span><br>
+Vacuum diode: cathode at \(y=0\) (V = 0), anode at \(y=d\) (\(V=V_0\)). Electrons leave the cathode with zero velocity and the field at the cathode is zero (space-charge limited). Derive V(y) and the current density J.</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<div class="step"><div class="n">1</div><div class="c"><strong>The electrons are a volume charge</strong>, so use Poisson: \(\dfrac{d^2V}{dy^2}=-\dfrac{\rho}{\epsilon_0}\), where \(\rho\) is negative.</div></div>
+<div class="step"><div class="n">2</div><div class="c"><strong>Electron speed</strong> from energy conservation: \(\tfrac12mu^2=eV\Rightarrow u=\sqrt{2eV/m}\).</div></div>
+<div class="step"><div class="n">3</div><div class="c"><strong>Current is the same everywhere</strong> in the steady state: \(J=|\rho|u\Rightarrow\rho=-\dfrac{J}{u}=-\dfrac{J}{\sqrt{2e/m}}V^{-1/2}\).</div></div>
+<div class="step"><div class="n">4</div><div class="c">Poisson becomes \(\dfrac{d^2V}{dy^2}=\dfrac{J}{\epsilon_0\sqrt{2e/m}}V^{-1/2}\equiv K\,V^{-1/2}\).</div></div>
+<div class="step"><div class="n">5</div><div class="c"><strong>Trick:</strong> multiply both sides by \(2\dfrac{dV}{dy}\). The left side becomes \(\dfrac{d}{dy}\left(\dfrac{dV}{dy}\right)^2\) and the right side becomes \(4K\dfrac{d}{dy}\left(V^{1/2}\right)\).</div></div>
+<div class="step"><div class="n">6</div><div class="c">Integrate. At \(y=0\), both V and dV/dy are 0, so the constant is 0: \(\left(\dfrac{dV}{dy}\right)^2=4KV^{1/2}\Rightarrow\dfrac{dV}{dy}=2\sqrt K\,V^{1/4}\).</div></div>
+<div class="step"><div class="n">7</div><div class="c">Separate: \(V^{-1/4}dV=2\sqrt K\,dy\Rightarrow\tfrac43V^{3/4}=2\sqrt K\,y\) (the constant is 0 since V(0) = 0).</div></div>
+<div class="step"><div class="n">8</div><div class="c">At \(y=d\): \(\tfrac43V_0^{3/4}=2\sqrt Kd\). Divide the two: \(\left(\dfrac{V}{V_0}\right)^{3/4}=\dfrac yd\Rightarrow V=V_0\left(\dfrac yd\right)^{4/3}\).</div></div>
+<div class="step"><div class="n">9</div><div class="c">From step 8, \(\sqrt K=\dfrac{2V_0^{3/4}}{3d}\Rightarrow K=\dfrac{4V_0^{3/2}}{9d^2}\). Since \(K=\dfrac{J}{\epsilon_0\sqrt{2e/m}}\), \(\;J=\dfrac{4\epsilon_0}{9d^2}\sqrt{\dfrac{2e}{m}}\,V_0^{3/2}\).</div></div>
+<p class="ans">Answer: \(V=V_0(y/d)^{4/3}\) and \(J=\dfrac{4\epsilon_0}{9d^2}\sqrt{\dfrac{2e}{m}}V_0^{3/2}\) (the Child–Langmuir three-halves power law).</p>
+</div></details>
+
+<div class="q"><span class="qh">Q17.</span> <span class="tag">very likely</span><br>
+Coaxial cable: inner conductor radius \(a=1\) mm at \(V_0=100\) V, outer conductor radius \(b=5\) mm grounded. Solve Laplace's equation for V(r), find E, the potential at \(r=2\) mm, the surface charge on the inner conductor, and C per unit length (\(\epsilon_r=1\)).</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<div class="step"><div class="n">1</div><div class="c">By symmetry V depends only on r: \(\dfrac1r\dfrac{d}{dr}\left(r\dfrac{dV}{dr}\right)=0\).</div></div>
+<div class="step"><div class="n">2</div><div class="c">Multiply by r and integrate: \(r\dfrac{dV}{dr}=C_1\Rightarrow V=C_1\ln r+C_2\).</div></div>
+<div class="step"><div class="n">3</div><div class="c">\(V(b)=0\Rightarrow C_2=-C_1\ln b\), so \(V=C_1\ln(r/b)=-C_1\ln(b/r)\).<br>\(V(a)=V_0\Rightarrow-C_1\ln(b/a)=V_0\Rightarrow C_1=-\dfrac{V_0}{\ln(b/a)}\).<br>Therefore \(V(r)=V_0\dfrac{\ln(b/r)}{\ln(b/a)}\).</div></div>
+<div class="step"><div class="n">4</div><div class="c">\(\mathbf E=-\mathbf a_r\dfrac{dV}{dr}=\mathbf a_r\dfrac{V_0}{r\ln(b/a)}\), pointing outward from the high-V inner conductor. ✓</div></div>
+<div class="step"><div class="n">5</div><div class="c">At r = 2 mm: \(V=100\times\dfrac{\ln2.5}{\ln5}=100\times\dfrac{0.9163}{1.6094}=56.9\) V. <em>Not</em> 75 V: the potential falls off logarithmically, not linearly.</div></div>
+<div class="step"><div class="n">6</div><div class="c">\(\rho_s(a)=\epsilon_0E(a)=\dfrac{\epsilon_0V_0}{a\ln(b/a)}=\dfrac{8.854\times10^{-12}\times100}{10^{-3}\times1.6094}=5.50\times10^{-7}\) C/m².</div></div>
+<div class="step"><div class="n">7</div><div class="c">Charge per metre: \(Q'=2\pi a\rho_s=\dfrac{2\pi\epsilon_0V_0}{\ln(b/a)}\). So \(C'=\dfrac{Q'}{V_0}=\dfrac{2\pi\epsilon_0}{\ln5}=\dfrac{5.563\times10^{-11}}{1.6094}=34.6\) pF/m.</div></div>
+<p class="ans">Answer: \(V=V_0\ln(b/r)/\ln(b/a)\), E = 62.1/r V/m (r in m), V(2 mm) = 56.9 V, \(\rho_s\) = 0.55 μC/m², C = 34.6 pF/m.</p>
+</div></details>
+
+<div class="q"><span class="qh">Q18.</span> <span class="tag">very likely</span><br>
+Concentric spheres: the inner sphere (\(R=a=5\) cm) is at \(V_0=100\) V and the outer (\(R=b=10\) cm) is grounded. Solve Laplace's equation for V(R), find V at R = 7.5 cm, E at the inner surface, and the capacitance (air).</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<div class="step"><div class="n">1</div><div class="c">V depends only on R: \(\dfrac{1}{R^2}\dfrac{d}{dR}\left(R^2\dfrac{dV}{dR}\right)=0\Rightarrow R^2\dfrac{dV}{dR}=C_1\Rightarrow V=-\dfrac{C_1}{R}+C_2\).</div></div>
+<div class="step"><div class="n">2</div><div class="c">Write it as \(V=\dfrac{A}{R}+B\). \(V(b)=0\Rightarrow B=-A/b\), so \(V=A\left(\dfrac1R-\dfrac1b\right)\). \(V(a)=V_0\Rightarrow A=\dfrac{V_0}{\frac1a-\frac1b}\).</div></div>
+<div class="step"><div class="n">3</div><div class="c">\(V(R)=V_0\dfrac{\frac1R-\frac1b}{\frac1a-\frac1b}\). With a = 0.05, b = 0.1: \(\frac1a-\frac1b=20-10=10\) m⁻¹.</div></div>
+<div class="step"><div class="n">4</div><div class="c">At R = 0.075: \(\frac1R=13.33\). So \(V=100\times\dfrac{13.33-10}{10}=33.3\) V.</div></div>
+<div class="step"><div class="n">5</div><div class="c">\(E_R=-\dfrac{dV}{dR}=\dfrac{A}{R^2}=\dfrac{V_0}{R^2(1/a-1/b)}\). At R = a: \(\dfrac{100}{0.0025\times10}=4000\) V/m.</div></div>
+<div class="step"><div class="n">6</div><div class="c">\(Q=4\pi a^2\epsilon_0E(a)=4\pi\epsilon_0A=\dfrac{4\pi\epsilon_0V_0}{1/a-1/b}\). So \(C=\dfrac{4\pi\epsilon_0}{1/a-1/b}=\dfrac{1.1127\times10^{-10}}{10}=11.1\) pF.</div></div>
+<p class="ans">Answer: V(7.5 cm) = 33.3 V, E(a) = 4 kV/m, C = 11.1 pF.</p>
+</div></details>
+
+<div class="q"><span class="qh">Q19.</span> <span class="tag">likely</span><br>
+Two infinite conducting half-planes meet along the z-axis at an angle \(\alpha=30°\), separated by a thin insulating gap at the edge. The plane \(\phi=0\) is grounded and the plane \(\phi=\alpha\) is at 100 V. Find V and E in the region between them, and evaluate E at r = 2 cm.</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<div class="step"><div class="n">1</div><div class="c">The boundaries are surfaces of constant φ, so V depends only on φ: \(\dfrac{1}{r^2}\dfrac{d^2V}{d\phi^2}=0\Rightarrow V=C_1\phi+C_2\).</div></div>
+<div class="step"><div class="n">2</div><div class="c">\(V(0)=0\Rightarrow C_2=0\). \(V(\alpha)=V_0\Rightarrow C_1=V_0/\alpha\). So \(V=\dfrac{V_0\phi}{\alpha}\).</div></div>
+<div class="step"><div class="n">3</div><div class="c">\(\mathbf E=-\mathbf a_\phi\dfrac1r\dfrac{\partial V}{\partial\phi}=-\mathbf a_\phi\dfrac{V_0}{\alpha r}\). <strong>Don't forget the \(1/r\).</strong></div></div>
+<div class="step"><div class="n">4</div><div class="c">α must be in <strong>radians</strong>: \(30°=\pi/6=0.5236\). At r = 0.02 m: \(|E|=\dfrac{100}{0.5236\times0.02}=9549\) V/m.</div></div>
+<p class="ans">Answer: \(V=\dfrac{600}{\pi}\phi\) V, \(\mathbf E=-\mathbf a_\phi\dfrac{100}{0.5236\,r}\), |E| ≈ 9.55 kV/m at 2 cm.</p>
+</div></details>
+
+<div class="q"><span class="qh">Q20.</span> <span class="tag">possible</span><br>
+A conducting cone of half-angle \(\alpha\) (apex at the origin, axis along z) is held at \(V_0\) and insulated from a grounded conducting plane at \(\theta=\pi/2\). Find V and E between them.</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<div class="step"><div class="n">1</div><div class="c">Boundaries are θ = constant, so V = V(θ): \(\dfrac{1}{R^2\sin\theta}\dfrac{d}{d\theta}\left(\sin\theta\dfrac{dV}{d\theta}\right)=0\).</div></div>
+<div class="step"><div class="n">2</div><div class="c">\(\sin\theta\dfrac{dV}{d\theta}=C_1\Rightarrow\dfrac{dV}{d\theta}=\dfrac{C_1}{\sin\theta}\Rightarrow V=C_1\ln\left(\tan\dfrac\theta2\right)+C_2\).</div></div>
+<div class="step"><div class="n">3</div><div class="c">\(V(\pi/2)=0\): \(\tan(\pi/4)=1\) and \(\ln1=0\), so \(C_2=0\).</div></div>
+<div class="step"><div class="n">4</div><div class="c">\(V(\alpha)=V_0\Rightarrow C_1=\dfrac{V_0}{\ln\tan(\alpha/2)}\). So \(V=V_0\dfrac{\ln\tan(\theta/2)}{\ln\tan(\alpha/2)}\).</div></div>
+<div class="step"><div class="n">5</div><div class="c">\(\mathbf E=-\mathbf a_\theta\dfrac1R\dfrac{dV}{d\theta}=-\mathbf a_\theta\dfrac{V_0}{R\sin\theta\,\ln\tan(\alpha/2)}\). Since \(\alpha&lt;\pi/2\), \(\ln\tan(\alpha/2)&lt;0\), so E actually points in \(+\mathbf a_\theta\): from the cone toward the plane, as expected.</div></div>
+<p class="ans">Answer: \(V=V_0\dfrac{\ln\tan(\theta/2)}{\ln\tan(\alpha/2)}\), \(\mathbf E=-\mathbf a_\theta\dfrac{V_0}{R\sin\theta\ln\tan(\alpha/2)}\).</p>
+</div></details>
+
+<div class="q"><span class="qh">Q21.</span> <span class="tag">advanced, possible</span><br>
+Two grounded, semi-infinite parallel conducting planes lie at \(y=0\) and \(y=b\) for \(x&gt;0\). The end \(x=0\) is closed by a conducting strip, insulated from the planes, held at \(V_0\). Find V(x, y) inside the slot.</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<div class="step"><div class="n">1</div><div class="c"><strong>Boundary conditions</strong> (no z dependence, so 2-D): (a) V(x, 0) = 0, (b) V(x, b) = 0, (c) V → 0 as x → ∞, (d) V(0, y) = V₀.</div></div>
+<div class="step"><div class="n">2</div><div class="c"><strong>Separate:</strong> V = X(x)Y(y), so \(X''/X=-Y''/Y=k^2\).</div></div>
+<div class="step"><div class="n">3</div><div class="c"><strong>Choose the forms.</strong> In y, V must be zero at y = 0 and y = b, which needs a sine: \(Y=\sin ky\). In x, V must decay, so \(X=e^{-kx}\) (we discard \(e^{+kx}\) because it blows up).</div></div>
+<div class="step"><div class="n">4</div><div class="c"><strong>Apply (b):</strong> \(\sin kb=0\Rightarrow k=\dfrac{n\pi}{b}\), n = 1, 2, 3, …</div></div>
+<div class="step"><div class="n">5</div><div class="c"><strong>Superpose</strong> (Laplace is linear): \(V=\sum_n C_n e^{-n\pi x/b}\sin\dfrac{n\pi y}{b}\).</div></div>
+<div class="step"><div class="n">6</div><div class="c"><strong>Apply (d)</strong> at x = 0: \(V_0=\sum C_n\sin\dfrac{n\pi y}{b}\) for 0 &lt; y &lt; b. This is a Fourier sine series. Multiply by \(\sin\frac{m\pi y}{b}\) and integrate from 0 to b. Orthogonality leaves \(C_m\dfrac b2=V_0\int_0^b\sin\dfrac{m\pi y}{b}dy=\dfrac{V_0b}{m\pi}(1-\cos m\pi)\).</div></div>
+<div class="step"><div class="n">7</div><div class="c">\(C_n=\dfrac{2V_0}{n\pi}(1-\cos n\pi)\). That gives \(\dfrac{4V_0}{n\pi}\) for odd n and 0 for even n.</div></div>
+<p class="ans">Answer: \(V(x,y)=\dfrac{4V_0}{\pi}\displaystyle\sum_{n=1,3,5,\dots}\dfrac1n\,e^{-n\pi x/b}\sin\dfrac{n\pi y}{b}\).</p>
+<p><strong>Interpretation:</strong> each Fourier mode decays exponentially into the slot, and higher modes decay faster. Far inside, only the n = 1 term matters: \(V\approx\frac{4V_0}{\pi}e^{-\pi x/b}\sin\frac{\pi y}{b}\).</p>
+</div></details>
+
+<div class="q"><span class="qh">Q22.</span> <span class="tag">theory, very likely</span><br>
+(a) State the uniqueness theorem and explain its importance. (b) Show that a function satisfying Laplace's equation cannot have a maximum inside a charge-free region. (c) Explain why Laplace's equation, not Poisson's, governs the region between the plates of a charged capacitor.</div>
+<details class="sol"><summary>Show step-by-step solution</summary><div class="body">
+<p><strong>(a)</strong> "A solution of Poisson's (or Laplace's) equation that satisfies the given boundary conditions is unique." Its importance: any solution, however it was found (guessing, images, separation of variables), is <em>the</em> solution if it satisfies the equation and the boundary conditions. Give the proof sketch from Section 6: \(V_d=V_1-V_2\) gives \(\int|\nabla V_d|^2dv=0\), so \(V_d=0\).</p>
+<p><strong>(b)</strong> Suppose V had a maximum at a point P. At a maximum, every second derivative is ≤ 0, and for a strict maximum at least one is &lt; 0. Then \(\nabla^2V=V_{xx}+V_{yy}+V_{zz}&lt;0\), which contradicts \(\nabla^2V=0\). Equivalently, by the mean-value property V(P) equals the average over a small sphere around P, so it can't exceed every surrounding value. Therefore the extremes lie on the boundary.</p>
+<p><strong>(c)</strong> The capacitor's charges are <em>surface</em> charges on the conductors, which are the boundaries. The volume between the plates has \(\rho=0\), so \(\nabla^2V=0\) there. The surface charges enter only through the boundary conditions (V given on each plate) and are recovered afterward via \(\rho_s=\epsilon E_n\).</p>
+</div></details>
+
+<!-- ============================================================ -->
+<h2 id="quick">11. Rapid-fire concept checks</h2>
+<p class="small">Cover the answer and answer aloud.</p>
+<div class="tablewrap"><table>
+<tr><th>#</th><th>Question</th><th>Answer</th></tr>
+<tr><td>1</td><td>Units of energy density?</td><td>J/m³ (same as N/m², pressure)</td></tr>
+<tr><td>2</td><td>Can \(W_e=\frac12\sum Q_kV_k\) be negative?</td><td>Yes, when there are opposite charges. It is interaction energy only.</td></tr>
+<tr><td>3</td><td>Does \(\frac12\int\rho V\,dv\) include self-energy?</td><td>Yes</td></tr>
+<tr><td>4</td><td>Self-energy of a point charge?</td><td>Infinite</td></tr>
+<tr><td>5</td><td>E doubled, effect on \(w_e\)?</td><td>×4</td></tr>
+<tr><td>6</td><td>Force formula with Q constant? With V constant?</td><td>\(-\nabla W_e\); \(+\nabla W_e\)</td></tr>
+<tr><td>7</td><td>Direction of electrostatic pressure on a conductor?</td><td>Outward, normal to the surface, whatever the charge sign</td></tr>
+<tr><td>8</td><td>Poisson's equation?</td><td>\(\nabla^2V=-\rho/\epsilon\)</td></tr>
+<tr><td>9</td><td>Condition for Poisson to reduce to Laplace?</td><td>\(\rho=0\) (charge-free, simple medium)</td></tr>
+<tr><td>10</td><td>\(\nabla^2\) means?</td><td>Divergence of the gradient, \(\nabla\cdot\nabla\)</td></tr>
+<tr><td>11</td><td>Why must ε be constant?</td><td>To take it out of \(\nabla\cdot(\epsilon\nabla V)\)</td></tr>
+<tr><td>12</td><td>General V between coaxial cylinders?</td><td>\(C_1\ln r+C_2\)</td></tr>
+<tr><td>13</td><td>General V between concentric spheres?</td><td>\(C_1/R+C_2\)</td></tr>
+<tr><td>14</td><td>V between two planes meeting at an angle?</td><td>\(C_1\phi+C_2\)</td></tr>
+<tr><td>15</td><td>How many boundary conditions does a 1-D Laplace problem need?</td><td>Two (second-order ODE, two constants)</td></tr>
+<tr><td>16</td><td>Can V have a minimum in a charge-free region?</td><td>No: extremes lie only on the boundaries</td></tr>
+<tr><td>17</td><td>Theorem that justifies the method of images?</td><td>Uniqueness theorem</td></tr>
+<tr><td>18</td><td>Dirichlet vs Neumann?</td><td>V specified vs ∂V/∂n specified</td></tr>
+<tr><td>19</td><td>Child–Langmuir law?</td><td>\(J\propto V_0^{3/2}/d^2\); \(V\propto y^{4/3}\)</td></tr>
+<tr><td>20</td><td>Energy in a capacitor, three forms?</td><td>\(\frac12CV^2=\frac12QV=Q^2/2C\)</td></tr>
+<tr><td>21</td><td>Where is E largest in a coax?</td><td>At the inner conductor (E ∝ 1/r)</td></tr>
+<tr><td>22</td><td>A dielectric slab is partly inserted into a charged, isolated capacitor. Is it pulled in or pushed out?</td><td>Pulled in: W = Q²/2C decreases as C increases</td></tr>
+<tr><td>23</td><td>Separated solutions in x for V = 0 on two parallel walls?</td><td>sin / cos. In the open direction, exponentials or sinh/cosh.</td></tr>
+<tr><td>24</td><td>1 eV in joules?</td><td>1.6 × 10⁻¹⁹ J</td></tr>
+</table></div>
+
+<div class="box tip"><span class="label">Final exam-hall checklist</span>
+<ul>
+<li>Convert cm² to m² (×10⁻⁴), mm to m, and degrees to radians.</li>
+<li>Write W in terms of whatever is held constant (Q or V).</li>
+<li>Include the scale factors in the gradient: \(\frac1r\partial_\phi\), \(\frac1R\partial_\theta\).</li>
+<li>Check that E points from high V to low V.</li>
+<li>Check that the boundary conditions are satisfied by your final V. That is all uniqueness requires.</li>
+</ul>
+</div>
+<p class="small">Good luck. You've got this.</p>
+
+</div>
+<script>
+function toggleAll(open){document.querySelectorAll('details.sol').forEach(function(d){d.open=open;});}
+function toggleTheme(){
+  var r=document.documentElement;
+  var cur=r.getAttribute('data-theme');
+  var dark=cur? cur==='dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+  r.setAttribute('data-theme', dark?'light':'dark');
+}
+</script>
+</body>
+</html>
